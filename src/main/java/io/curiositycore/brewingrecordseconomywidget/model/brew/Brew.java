@@ -1,6 +1,7 @@
 package io.curiositycore.brewingrecordseconomywidget.model.brew;
 
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.CommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.util.Craftable;
 
 import java.util.Set;

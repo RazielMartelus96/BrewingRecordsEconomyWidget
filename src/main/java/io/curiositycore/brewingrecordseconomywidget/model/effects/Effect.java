@@ -4,6 +4,5 @@ import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectTy
 
 public interface Effect {
     String getEffectName();
-    String getCommandString();
     EffectType getEffectType();
 }

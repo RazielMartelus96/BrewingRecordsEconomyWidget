@@ -1,8 +1,11 @@
 package io.curiositycore.brewingrecordseconomywidget.model.brew;
 
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.NegativeEffect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.PositiveEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.NegativeEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.PositiveEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.CommandEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.NegativeCommandEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.PositiveCommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 
 import java.util.HashSet;
@@ -12,12 +15,12 @@ import java.util.stream.Collectors;
 public abstract class AbstractBrew implements Brew{
     protected String name;
     protected int cost;
-    protected Set<Effect> effects = new HashSet<>();
+    protected Set<Effect> commandEffects = new HashSet<>();
     protected Set<Ingredient> ingredients = new HashSet<>();
-    protected AbstractBrew(String name, int cost, Set<Effect> effects, Set<Ingredient> ingredients){
+    protected AbstractBrew(String name, int cost, Set<Effect> commandEffects, Set<Ingredient> ingredients){
         this.name = name;
         this.cost = cost;
-        this.effects = effects;
+        this.commandEffects = commandEffects;
         this.ingredients = ingredients;
     }
 
@@ -33,18 +36,18 @@ public abstract class AbstractBrew implements Brew{
 
     @Override
     public Set<Effect> getEffects() {
-        return this.effects;
+        return this.commandEffects;
     }
 
     @Override
     public String getPositiveEffectsAsString() {
-        String test = this.effects.stream().filter(effect -> effect instanceof PositiveEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
-        return this.effects.stream().filter(effect -> effect instanceof PositiveEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
+        String test = this.commandEffects.stream().filter(effect -> effect instanceof PositiveCommandEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
+        return this.commandEffects.stream().filter(effect -> effect instanceof PositiveEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
     }
 
     @Override
     public String getNegativeEffectsAsString() {
-        return this.effects.stream().filter(effect -> effect instanceof NegativeEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
+        return this.commandEffects.stream().filter(effect -> effect instanceof NegativeEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
     }
 
 
@@ -56,7 +59,7 @@ public abstract class AbstractBrew implements Brew{
     public abstract static class AbstractBrewBuilder<T extends Brew> implements BrewBuilder<T> {
         protected String name;
         protected int cost;
-        protected Set<Effect> effects = new HashSet<>();
+        protected Set<Effect> commandEffects = new HashSet<>();
         protected Set<Ingredient> ingredients = new HashSet<>();
 
         @Override
@@ -72,14 +75,14 @@ public abstract class AbstractBrew implements Brew{
         }
 
         @Override
-        public AbstractBrewBuilder<T> addEffect(Effect effect) {
-            if(effect == null){
+        public AbstractBrewBuilder<T> addEffect(Effect commandEffect) {
+            if(commandEffect == null){
                 return this;
             }
-            if(!isCorrectEffectType(effect) && !(effect instanceof NegativeEffect)){
+            if(!isCorrectEffectType(commandEffect) && !(commandEffect instanceof NegativeEffect)){
                 throw new RuntimeException("Effect was not of the correct type");
             }
-            this.effects.add(effect);
+            this.commandEffects.add(commandEffect);
             return this;
         }
 
@@ -88,7 +91,7 @@ public abstract class AbstractBrew implements Brew{
             this.ingredients.add(ingredient);
             return this;
         }
-        protected abstract boolean isCorrectEffectType(Effect effectToCheck);
+        protected abstract boolean isCorrectEffectType(Effect commandEffectToCheck);
 
     }
 }
