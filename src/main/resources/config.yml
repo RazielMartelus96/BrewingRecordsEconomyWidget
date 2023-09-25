@@ -460,11 +460,6 @@ recipes:
       - + Smells disgusting
       - ++ Smells alright
       - +++ Smells really good
-    servercommands:
-      - +++ weather clear
-      - + weather rain
-    playercommands:
-      - homes
     drinkmessage: Tastes good
     drinktitle: Warms you from inside
     customModelData: 556/557/557

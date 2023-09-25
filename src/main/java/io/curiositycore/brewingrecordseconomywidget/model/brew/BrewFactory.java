@@ -46,28 +46,30 @@ public class BrewFactory {
     private Brew getBrewFromConfigSectionMap(Map<String, Object> brewMap) {
         List<String> commands = (List<String>) brewMap.get("servercommands");
         List<String> effectNames = (List<String>) brewMap.get("effects");
-        if(commands == null){
-            return buildRoleplayBrew(brewMap);
-        }
-        for (String command : commands) {
-            Effect brewCommandEffect = getEffectCommandFromName(command);
-            if (brewCommandEffect.getEffectType().equals(EffectType.COMBAT)) {
-                return buildCombatBrew(brewMap);
-            } else if (brewCommandEffect.getEffectType().equals(EffectType.UTILITY)) {
-                return buildUtilityBrew(brewMap);
-            } else if (brewCommandEffect.getEffectType().equals(EffectType.ROLEPLAY)) {
-                return buildRoleplayBrew(brewMap);
+        if(commands != null){
+
+
+            for (String command : commands) {
+                Effect brewCommandEffect = getEffectCommandFromName(command);
+                if (brewCommandEffect.getEffectType().equals(EffectType.COMBAT)) {
+                    return buildCombatBrew(brewMap);
+                } else if (brewCommandEffect.getEffectType().equals(EffectType.UTILITY)) {
+                    return buildUtilityBrew(brewMap);
+                } else if (brewCommandEffect.getEffectType().equals(EffectType.ROLEPLAY)) {
+                    return buildRoleplayBrew(brewMap);
+                }
             }
         }
-
-        for (String effectName : effectNames) {
-            Effect brewEffect = getEffectFromName(effectName);
-            if (brewEffect.getEffectType().equals(EffectType.COMBAT)) {
-                return buildCombatBrew(brewMap);
-            } else if (brewEffect.getEffectType().equals(EffectType.UTILITY)) {
-                return buildUtilityBrew(brewMap);
-            } else if (brewEffect.getEffectType().equals(EffectType.ROLEPLAY)) {
-                return buildRoleplayBrew(brewMap);
+        if(effectNames != null){
+            for (String effectName : effectNames) {
+                Effect brewEffect = getEffectFromName(effectName);
+                if (brewEffect.getEffectType().equals(EffectType.COMBAT)) {
+                    return buildCombatBrew(brewMap);
+                } else if (brewEffect.getEffectType().equals(EffectType.UTILITY)) {
+                    return buildUtilityBrew(brewMap);
+                } else if (brewEffect.getEffectType().equals(EffectType.ROLEPLAY)) {
+                    return buildRoleplayBrew(brewMap);
+                }
             }
         }
         return null;
@@ -75,12 +77,13 @@ public class BrewFactory {
 
     private Effect getEffectFromName(String effectName) {
         for (PositiveBrewEffects positiveBrewEffects : PositiveBrewEffects.values()) {
-            if (effectName.contains(positiveBrewEffects.getEffectName().toUpperCase())) {
+            String trueEffectName = effectName.substring(0,effectName.indexOf("/"));
+            if (trueEffectName.contains(positiveBrewEffects.getEffectName().toUpperCase())) {
                 return positiveBrewEffects;
             }
         }
         for (NegativeBrewEffects negativeBrewEffects : NegativeBrewEffects.values()) {
-            if (effectName.contains(negativeBrewEffects.getEffectName())) {
+            if (effectName.substring(0,effectName.indexOf("/")).contains(negativeBrewEffects.getEffectName())) {
                 return negativeBrewEffects;
             }
         }

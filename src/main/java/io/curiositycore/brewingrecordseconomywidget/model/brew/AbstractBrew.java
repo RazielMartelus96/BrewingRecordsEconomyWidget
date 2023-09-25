@@ -80,7 +80,7 @@ public abstract class AbstractBrew implements Brew{
                 return this;
             }
             if(!isCorrectEffectType(commandEffect) && !(commandEffect instanceof NegativeEffect)){
-                throw new RuntimeException("Effect was not of the correct type");
+                throw new RuntimeException("Effect:'" + commandEffect + "' was not of the correct type");
             }
             this.commandEffects.add(commandEffect);
             return this;
