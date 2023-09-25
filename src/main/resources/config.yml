@@ -453,6 +453,11 @@ recipes:
     color: DARK_RED
     difficulty: 3
     alcohol: 14
+    servercommands:
+      - +++ weather clear
+      - + weather rain
+    playercommands:
+        - homes
     lore:
       - This is an examble brew
       - ++Just a normal Example

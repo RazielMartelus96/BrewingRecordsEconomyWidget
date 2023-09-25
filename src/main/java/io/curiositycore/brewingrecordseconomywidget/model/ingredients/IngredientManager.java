@@ -1,7 +1,12 @@
 package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class IngredientManager {
 
@@ -33,5 +38,9 @@ public class IngredientManager {
 
     public Ingredient getCustomIngredient(String ingredientName){
         return this.ingredientMap.get(ingredientName);
+    }
+    public void addIngredientsToTable(TableView<Ingredient> ingredientTableToAdd){
+        ObservableList<Ingredient> ingredientData = FXCollections.observableList(this.ingredientMap.values().stream().filter(Objects::nonNull).toList());
+        ingredientTableToAdd.setItems(ingredientData);
     }
 }

@@ -22,7 +22,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#onIngredientsListOpen" text="Ingredients List" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -34,7 +34,7 @@
       </MenuBar>
    </top>
    <center>
-      <TableView fx:id="brewTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="brewTable" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="brewNameColumn" editable="false" prefWidth="128.0" text="Brew Name" />
           <TableColumn fx:id="brewPositiveEffectsColumn" editable="false" prefWidth="95.0" text="Positive Effects" />
@@ -67,12 +67,12 @@
                </rowConstraints>
                <children>
                   <Label alignment="CENTER" layoutX="100.0" prefHeight="17.0" prefWidth="317.0" text="Ingredients" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
-                  <TableView prefHeight="194.0" prefWidth="640.0" GridPane.rowIndex="1">
+                  <TableView fx:id="ingredientTable" prefHeight="194.0" prefWidth="640.0" GridPane.rowIndex="1">
                     <columns>
-                      <TableColumn prefWidth="166.0" text="Name" />
-                      <TableColumn prefWidth="139.0" text="Amount" />
-                        <TableColumn prefWidth="132.0" text="Cost ($)" />
-                        <TableColumn prefWidth="264.0" text="Crafting Ingredients" />
+                      <TableColumn fx:id="ingredientNameColumn" prefWidth="166.0" text="Name" />
+                      <TableColumn fx:id="ingredientAmountColumn" prefWidth="139.0" text="Amount" />
+                        <TableColumn fx:id="ingredientCostColumn" prefWidth="132.0" text="Cost ($)" />
+                        <TableColumn fx:id="ingredientCraftingMaterialsColumn" prefWidth="264.0" text="Crafting Ingredients" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

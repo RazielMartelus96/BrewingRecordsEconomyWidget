@@ -1,11 +1,11 @@
-package io.curiositycore.brewingrecordseconomywidget.model.effects.types.command;
+package io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums;
 
-import io.curiositycore.brewingrecordseconomywidget.model.effects.PositiveCommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectType;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.PositiveEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.PositiveCommandEffect;
 
 public enum PositiveBrewCommandEffect implements PositiveCommandEffect, PositiveEffect {
-    WEATHER_CLEAR("Clear Weather","weather clear", EffectType.UTILITY),EXPERIENCE("XP","xp give", EffectType.UTILITY),
+    WEATHER("Weather Effect","weather", EffectType.UTILITY),EXPERIENCE("XP","xp give", EffectType.UTILITY),
     DISGUISE("Disguise","disguiseplayer", EffectType.UTILITY),
     TITLE("Title","title", EffectType.ROLEPLAY),
     SUMMON("Summon","run summon", EffectType.UTILITY),

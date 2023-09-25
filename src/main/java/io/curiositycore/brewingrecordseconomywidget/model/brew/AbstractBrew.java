@@ -3,9 +3,6 @@ package io.curiositycore.brewingrecordseconomywidget.model.brew;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.NegativeEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.PositiveEffect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.CommandEffect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.NegativeCommandEffect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.PositiveCommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 
 import java.util.HashSet;
@@ -15,12 +12,12 @@ import java.util.stream.Collectors;
 public abstract class AbstractBrew implements Brew{
     protected String name;
     protected int cost;
-    protected Set<Effect> commandEffects = new HashSet<>();
+    protected Set<Effect> effects;
     protected Set<Ingredient> ingredients = new HashSet<>();
-    protected AbstractBrew(String name, int cost, Set<Effect> commandEffects, Set<Ingredient> ingredients){
+    protected AbstractBrew(String name, int cost, Set<Effect> effects, Set<Ingredient> ingredients){
         this.name = name;
         this.cost = cost;
-        this.commandEffects = commandEffects;
+        this.effects = effects;
         this.ingredients = ingredients;
     }
 
@@ -36,19 +33,23 @@ public abstract class AbstractBrew implements Brew{
 
     @Override
     public Set<Effect> getEffects() {
-        return this.commandEffects;
+        return this.effects;
     }
 
     @Override
     public String getPositiveEffectsAsString() {
-        String test = this.commandEffects.stream().filter(effect -> effect instanceof PositiveCommandEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
-        return this.commandEffects.stream().filter(effect -> effect instanceof PositiveEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
+        if(effects.stream().noneMatch(PositiveEffect.class::isInstance)){
+            return "No Effects";
+        }
+        return this.effects.stream().filter(PositiveEffect.class::isInstance).map(effect -> effect.getEffectName().replace("_"," ")).collect(Collectors.joining(", ")).toUpperCase();
     }
 
     @Override
     public String getNegativeEffectsAsString() {
-        return this.commandEffects.stream().filter(effect -> effect instanceof NegativeEffect).map(Effect::getEffectName).collect(Collectors.joining(", "));
-    }
+        if(effects.stream().noneMatch(NegativeEffect.class::isInstance)){
+            return "No Effects";
+        }
+        return this.effects.stream().filter(NegativeEffect.class::isInstance).map(effect -> effect.getEffectName().replace("_"," ")).collect(Collectors.joining(", ")).toUpperCase();    }
 
 
     @Override
@@ -79,9 +80,9 @@ public abstract class AbstractBrew implements Brew{
             if(commandEffect == null){
                 return this;
             }
-            if(!isCorrectEffectType(commandEffect) && !(commandEffect instanceof NegativeEffect)){
+            /*if(!isCorrectEffectType(commandEffect) && !(commandEffect instanceof NegativeEffect)){
                 throw new RuntimeException("Effect:'" + commandEffect + "' was not of the correct type");
-            }
+            }*/
             this.commandEffects.add(commandEffect);
             return this;
         }

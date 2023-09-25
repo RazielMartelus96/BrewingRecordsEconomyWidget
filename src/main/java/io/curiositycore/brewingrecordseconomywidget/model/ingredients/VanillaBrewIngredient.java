@@ -13,8 +13,28 @@ public class VanillaBrewIngredient implements Ingredient{
     }
 
     @Override
-    public String getPotentialItemNames() {
+    public String getPotentialMaterialChoices() {
         return this.ingredient.name().toLowerCase().replace("_","");
+    }
+
+    @Override
+    public String getPotentialCustomNames() {
+        return "Vanilla";
+    }
+
+    @Override
+    public int getAmount() {
+        return 0;
+    }
+
+    @Override
+    public int getCost() {
+        return 0;
+    }
+
+    @Override
+    public String getPotentialCraftingIngredients() {
+        return "Not craftable";
     }
 
 }

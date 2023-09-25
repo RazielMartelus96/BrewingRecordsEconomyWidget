@@ -1,10 +1,10 @@
-package io.curiositycore.brewingrecordseconomywidget.model.effects.types.command;
+package io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums;
 
-import io.curiositycore.brewingrecordseconomywidget.model.effects.NegativeCommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectType;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.NegativeEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.NegativeCommandEffect;
 
-public enum NegativeBrewCommandEffect implements NegativeCommandEffect , NegativeEffect {
+public enum NegativeBrewCommandEffect implements NegativeCommandEffect, NegativeEffect {
     //TODO you assumed it was only ocmmands but there is actually an "Effects" part of a brew's map. needs implementing.
     MINING_FATIGUE("Mining Fatigue","", EffectType.UTILITY);
     private String effectName;

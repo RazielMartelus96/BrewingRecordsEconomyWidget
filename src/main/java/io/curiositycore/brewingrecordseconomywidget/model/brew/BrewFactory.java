@@ -5,7 +5,7 @@ import io.curiositycore.brewingrecordseconomywidget.model.brew.types.RoleplayBre
 import io.curiositycore.brewingrecordseconomywidget.model.brew.types.UtilityBrew;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.*;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectType;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.PositiveBrewCommandEffect;
+import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums.PositiveBrewCommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.vanilla.NegativeBrewEffects;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.vanilla.PositiveBrewEffects;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.CustomBrewIngredient;
@@ -63,6 +63,10 @@ public class BrewFactory {
         if(effectNames != null){
             for (String effectName : effectNames) {
                 Effect brewEffect = getEffectFromName(effectName);
+                if(brewEffect == null){
+                    System.out.println("The effect: '"+effectName+"' is not defined");
+                    return null;
+                }
                 if (brewEffect.getEffectType().equals(EffectType.COMBAT)) {
                     return buildCombatBrew(brewMap);
                 } else if (brewEffect.getEffectType().equals(EffectType.UTILITY)) {
@@ -72,9 +76,9 @@ public class BrewFactory {
                 }
             }
         }
-        return null;
+        return buildRoleplayBrew(brewMap);
     }
-
+    //TODO add these to a utility class
     private Effect getEffectFromName(String effectName) {
         for (PositiveBrewEffects positiveBrewEffects : PositiveBrewEffects.values()) {
             String trueEffectName = effectName.substring(0,effectName.indexOf("/"));
@@ -105,7 +109,9 @@ public class BrewFactory {
         }
         catch(NullPointerException nullPointerException){
             if(ingredientMap.get("name") == null){
-                return new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString());
+                CustomBrewIngredient customBrewIngredient = new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString());
+                IngredientManager.getInstance().register(customBrewIngredient);
+                return customBrewIngredient;
             }
             return new CustomBrewIngredient(ingredientMap.get("name").toString());
         }
@@ -117,89 +123,50 @@ public class BrewFactory {
             return new CustomBrewIngredient(brewName.substring(0,brewName.indexOf("/")));
         }
         if(!IngredientManager.getInstance().isRegistered(ingredientName)){
-            return new VanillaBrewIngredient(ingredientName);
+            VanillaBrewIngredient vanillaBrewIngredient = new VanillaBrewIngredient(ingredientName);
+            IngredientManager.getInstance().register(vanillaBrewIngredient);
+            return vanillaBrewIngredient;
         }
         return IngredientManager.getInstance().getCustomIngredient(ingredientName);
     }
 
-    private CombatBrew buildCombatBrew(Map<String, Object> combatBrewMap){
-        CombatBrew.CombatBrewBuilder combatBrewBuilder = new CombatBrew.CombatBrewBuilder();
-        String brewName = combatBrewMap.get("name").toString();
-        if(brewName.contains("/")){
-            combatBrewBuilder.setName(brewName.substring(0,brewName.indexOf("/")));
-        } else{
-            combatBrewBuilder.setName(brewName);
-        }
-        try{
-            ((List<String>) combatBrewMap.get("servercommands")).forEach(commandName->
-                    combatBrewBuilder.addEffect(getEffectCommandFromName(commandName)));
-        }
-        catch(NullPointerException nullPointerException){
-            System.out.println("The brew called: "+ brewName + " has no commands");
-        }
-        try{
-        ((List<String>) combatBrewMap.get("effects")).forEach(commandName->
-                combatBrewBuilder.addEffect(getEffectFromName(commandName)));
-        }catch(NullPointerException nullPointerException){
-            System.out.println("The brew called: "+ brewName+" has no vanilla commands");
-        }
-        ((List<String>) combatBrewMap.get("ingredients")).forEach(ingredientName->
-                combatBrewBuilder.addIngredient(getIngredientFromName(ingredientName)));
-        return combatBrewBuilder.build();
-
-
+    private CombatBrew buildCombatBrew(Map<String, Object> combatBrewMap) {
+        return buildBrew(combatBrewMap, new CombatBrew.CombatBrewBuilder()).build();
     }
 
-    private RoleplayBrew buildRoleplayBrew(Map<String, Object> roleplayBrewMap){
-        RoleplayBrew.RoleplayBrewBuilder roleplayBrewBuilder = new RoleplayBrew.RoleplayBrewBuilder();
-        String brewName = roleplayBrewMap.get("name").toString();
-        if(brewName.contains("/")){
-            roleplayBrewBuilder.setName(brewName.substring(0,brewName.indexOf("/")));
-        } else{
-            roleplayBrewBuilder.setName(brewName);
-        }
-        try{
-        ((List<String>) roleplayBrewMap.get("servercommands")).forEach(commandName->
-                roleplayBrewBuilder.addEffect(getEffectCommandFromName(commandName)));
-        }
-        catch(NullPointerException nullPointerException){
-            System.out.println("The brew called: "+ brewName + " has no commands");
-        }
-        try{
-            ((List<String>) roleplayBrewMap.get("effects")).forEach(commandName->
-                    roleplayBrewBuilder.addEffect(getEffectFromName(commandName)));
-        }catch(NullPointerException nullPointerException){
-            System.out.println("The brew called: "+ brewName+" has no vanilla commands");
-        }
-        ((List<String>) roleplayBrewMap.get("ingredients")).forEach(ingredientName->
-                roleplayBrewBuilder.addIngredient(getIngredientFromName(ingredientName)));
-        return roleplayBrewBuilder.build();
+    private RoleplayBrew buildRoleplayBrew(Map<String, Object> roleplayBrewMap) {
+        return buildBrew(roleplayBrewMap, new RoleplayBrew.RoleplayBrewBuilder()).build();
     }
 
-    private UtilityBrew buildUtilityBrew(Map<String, Object> utilityBrewMap){
-        UtilityBrew.UtilityBrewBuilder utilityBrewBuilder = new UtilityBrew.UtilityBrewBuilder();
-        String brewName = utilityBrewMap.get("name").toString();
-        if(brewName.contains("/")){
-            utilityBrewBuilder.setName(brewName.substring(0,brewName.indexOf("/")));
-        } else{
-            utilityBrewBuilder.setName(brewName);
+    private UtilityBrew buildUtilityBrew(Map<String, Object> utilityBrewMap) {
+        return buildBrew(utilityBrewMap, new UtilityBrew.UtilityBrewBuilder()).build();
+    }
+    private <T extends AbstractBrew.AbstractBrewBuilder> T buildBrew(Map<String, Object> brewMap, T brewBuilder) {
+        String brewName = brewMap.get("name").toString();
+        if (brewName.contains("/")) {
+            brewBuilder.setName(brewName.substring(0, brewName.indexOf("/")));
+        } else {
+            brewBuilder.setName(brewName);
         }
-        try{
-            ((List<String>) utilityBrewMap.get("servercommands")).forEach(commandName->
-                    utilityBrewBuilder.addEffect(getEffectCommandFromName(commandName)));
+
+        try {
+            ((List<String>) brewMap.get("servercommands")).forEach(commandName ->
+                    brewBuilder.addEffect(getEffectCommandFromName(commandName)));
+        } catch (NullPointerException nullPointerException) {
+            System.out.println("The brew called: " + brewName + " has no commands");
         }
-        catch(NullPointerException nullPointerException){
-            System.out.println("The brew called: "+ brewName + " has no commands");
+
+        try {
+            ((List<String>) brewMap.get("effects")).forEach(commandName ->
+                    brewBuilder.addEffect(getEffectFromName(commandName)));
+        } catch (NullPointerException nullPointerException) {
+            System.out.println("The brew called: " + brewName + " has no vanilla commands");
         }
-        try{
-            ((List<String>) utilityBrewMap.get("effects")).forEach(commandName->
-                    utilityBrewBuilder.addEffect(getEffectFromName(commandName)));
-        }catch(NullPointerException nullPointerException){
-            System.out.println("The brew called: "+ brewName+" has no vanilla commands");
-        }
-        ((List<String>) utilityBrewMap.get("ingredients")).forEach(ingredientName->
-                utilityBrewBuilder.addIngredient(getIngredientFromName(ingredientName)));
-        return utilityBrewBuilder.build();
+
+        ((List<String>) brewMap.get("ingredients")).forEach(ingredientName ->
+                brewBuilder.addIngredient(getIngredientFromName(ingredientName)));
+
+        return brewBuilder;
     }
 
 }
