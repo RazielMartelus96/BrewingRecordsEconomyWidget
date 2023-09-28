@@ -103,19 +103,30 @@ public class BrewFactory {
         return null;
     }
 
-    private Ingredient initCustomIngredient(Map<String,Object> ingredientMap, String ingredientInternalName){
+    private Ingredient initCustomIngredient(Map<String,Object> ingredientMap, String ingredientInternalName) throws NullPointerException{
         try{
-        return new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString());
+            if(ingredientMap.get("name") instanceof String[] ingredientCustomNames){
+                return new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString(),ingredientCustomNames,0);
+            } else if (ingredientMap.get("name") instanceof String ingredientCustomName) {
+                return new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString(),ingredientCustomName,0);
+
+            } else if (ingredientMap.get("name") == null) {
+                throw new NullPointerException();
+
+            }
         }
         catch(NullPointerException nullPointerException){
             if(ingredientMap.get("name") == null){
-                CustomBrewIngredient customBrewIngredient = new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString());
+                CustomBrewIngredient customBrewIngredient = new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("material").toString(),new String[0],0);
                 IngredientManager.getInstance().register(customBrewIngredient);
                 return customBrewIngredient;
             }
-            return new CustomBrewIngredient(ingredientMap.get("name").toString());
-        }
+            if(ingredientMap.get("material") == null){
+                return new CustomBrewIngredient(ingredientInternalName,ingredientMap.get("name").toString());
 
+            }
+        }
+        return new CustomBrewIngredient(ingredientInternalName);
     }
     private Ingredient getIngredientFromName(String ingredientName){
         if(ingredientName.contains("Brewery")){

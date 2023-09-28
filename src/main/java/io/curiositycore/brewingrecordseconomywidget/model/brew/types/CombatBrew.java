@@ -2,7 +2,6 @@ package io.curiositycore.brewingrecordseconomywidget.model.brew.types;
 
 import io.curiositycore.brewingrecordseconomywidget.model.brew.AbstractBrew;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.CommandEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectType;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 

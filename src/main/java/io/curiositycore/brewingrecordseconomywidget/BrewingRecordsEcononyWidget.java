@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Main class which initializes the user interface of the BREW executable.
+ */
 public class BrewingRecordsEcononyWidget extends Application {
     @Override
     public void start(Stage stage) throws IOException {

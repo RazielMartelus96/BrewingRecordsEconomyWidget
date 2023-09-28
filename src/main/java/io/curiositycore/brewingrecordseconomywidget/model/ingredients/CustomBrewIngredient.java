@@ -7,15 +7,31 @@ public class CustomBrewIngredient implements Ingredient{
     private String name;
     private String[] material;
     private String[] customNames;
-    //TODO get the custom names from the factory.
-    public CustomBrewIngredient(String name, String materialName){
+    private int cost;
+    private int amount;
+
+    public CustomBrewIngredient(String name, String materialName,String[] customNames, int cost){
         this.name = name;
         this.material = initMaterialArray(materialName);
+        this.customNames = customNames;
+        this.cost = cost;
+    }
+    public CustomBrewIngredient(String name, String materialName,String customName, int cost){
+        this.name = name;
+        this.material = initMaterialArray(materialName);
+        this.customNames = new String[]{customName};
+        this.cost = cost;
     }
     public CustomBrewIngredient(String name){
         this.name = name;
 
     }
+
+    public CustomBrewIngredient(String ingredientInternalName, String ingredientCustomName) {
+        this.name = ingredientInternalName;
+        this.customNames = new String[]{ingredientCustomName};
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -34,7 +50,10 @@ public class CustomBrewIngredient implements Ingredient{
 
     @Override
     public String getPotentialCustomNames() {
-        return null;
+        if(customNames == null||customNames.length == 0){
+            return "No custom names";
+        }
+        return Arrays.toString(customNames).replace("[","").replace("]","");
     }
 
     @Override
@@ -44,7 +63,7 @@ public class CustomBrewIngredient implements Ingredient{
 
     @Override
     public int getCost() {
-        return 0;
+        return this.cost;
     }
 
     @Override
