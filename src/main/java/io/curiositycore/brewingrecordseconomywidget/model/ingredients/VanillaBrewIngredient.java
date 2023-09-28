@@ -1,6 +1,7 @@
 package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 
 import org.bukkit.Material;
+//TODO good example for KK to potentially have a go at doing documentation for
 
 public class VanillaBrewIngredient implements Ingredient{
     private Material ingredient;
