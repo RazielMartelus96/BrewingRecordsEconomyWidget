@@ -2,6 +2,7 @@ package io.curiositycore.brewingrecordseconomywidget.gui.persistance;
 
 import io.curiositycore.brewingrecordseconomywidget.model.util.exceptions.DataNotValidException;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ public class PersistenceManager {
      * data's file name, as a String.
      */
     private Map<String, PersistentData> dataMap = new HashMap<>();
+    private String persistenceDirectoryPath;
     /**
      * Instance of the Persistence Manager, as per the Singleton Pattern.
      */
@@ -31,16 +33,10 @@ public class PersistenceManager {
     }
 
     /**
-     * Saves the persistent data to the persistent storage of the executable.
-     * @param dataToSave The persistent data to save.
-     * @throws DataNotValidException
+     * Boolean that represents if a persistent data's potential file name available to use.
+     * @return True if the name is not currently being used by another file, false if otherwise.
      */
-    public void savePersistenceData(PersistentData dataToSave) throws DataNotValidException{
-        if(dataToSave.validate()){
-            dataToSave.save();
-        }
-        else{
-            throw new DataNotValidException(dataToSave);
-        }
+    private boolean dataNameAvailable(PersistentData dataToCheck){
+        return !this.dataMap.containsKey(dataToCheck.getFileName());
     }
 }

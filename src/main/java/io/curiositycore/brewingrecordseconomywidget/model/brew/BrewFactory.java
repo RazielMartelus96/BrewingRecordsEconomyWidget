@@ -28,6 +28,7 @@ public class BrewFactory {
     }
 
     public Set<Brew> buildBrewSet(){
+        BrewManager brewManager = BrewManager.getInstance();
         Map<String,Object> configMap = YamlParser.getConfigMap(this.filePath);
         Map<String,Object> customItemMap = ((Map<String,Object>)configMap.get("customItems"));
         customItemMap
@@ -39,7 +40,13 @@ public class BrewFactory {
 
         Map<String,Object> brewMap = ((Map<String,Object>)configMap.get("recipes"));
 
-        brewMap.keySet().stream().forEach(brewName-> brewSet.add(getBrewFromConfigSectionMap((Map<String, Object>) brewMap.get(brewName))));
+        brewMap.keySet().stream().forEach(brewName-> {
+            Brew brewToAdd = getBrewFromConfigSectionMap((Map<String, Object>) brewMap.get(brewName));
+            if(brewToAdd != null){
+                brewSet.add(brewToAdd);
+                brewManager.register(brewToAdd);
+            }
+        });
         return this.brewSet;
     }
 

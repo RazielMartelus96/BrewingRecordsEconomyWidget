@@ -1,8 +1,11 @@
 package io.curiositycore.brewingrecordseconomywidget;
 
+import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.Brew;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewFactory;
+import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewManager;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
+import io.curiositycore.brewingrecordseconomywidget.model.ingredients.IngredientManager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -16,8 +19,10 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -84,5 +89,26 @@ public class MainWindowController {
         stage.setTitle("Second Window");
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+    @FXML
+    public void saveBrewsToPersistentData(){
+        Stage currentStage = (Stage) brewTable.getScene().getWindow();
+        File fileToSave = getFileViaDialog(currentStage);
+        BrewConfigData configDataToSave = new BrewConfigData(fileToSave.getName());
+        configDataToSave = BrewManager.getInstance().addBrewsToConfigData(configDataToSave);
+        configDataToSave = IngredientManager.getInstance().addIngredientsToConfigData(configDataToSave);
+        configDataToSave.save(fileToSave);
+    }
+    private File getFileViaDialog(Stage primaryStage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("json", "*.json"),
+                new FileChooser.ExtensionFilter("All Files", "*.json*")
+        );
+
+        // Show save file dialog
+        return fileChooser.showSaveDialog(primaryStage);
     }
 }
