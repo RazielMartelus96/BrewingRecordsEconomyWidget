@@ -1,12 +1,24 @@
 package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Material;
 
 public class VanillaBrewIngredient implements Ingredient{
+    private Class<?> ingredientClass = this.getClass();
+
     private Material ingredient;
-    public VanillaBrewIngredient(String ingredientName){
-        this.ingredient = Material.valueOf(ingredientName.toUpperCase().substring(0,ingredientName.indexOf("/")));
+    private int cost = 0;
+    public VanillaBrewIngredient(@JsonProperty("potentialMaterialChoices") String ingredientName){
+        if(ingredientName.contains("/")){
+            this.ingredient = Material.valueOf(ingredientName.toUpperCase().substring(0,ingredientName.indexOf("/")));
+        } else{
+
+            this.ingredient = Material.valueOf(ingredientName.toUpperCase().replace(" ","_"));
+        }
     }
+
+
     @Override
     public String getName() {
         return this.ingredient.name().toLowerCase().replace("_", " ");
@@ -14,7 +26,7 @@ public class VanillaBrewIngredient implements Ingredient{
 
     @Override
     public String getPotentialMaterialChoices() {
-        return this.ingredient.name().toLowerCase().replace("_","");
+        return this.ingredient.name().toLowerCase().replace("_"," ");
     }
 
     @Override
@@ -29,12 +41,20 @@ public class VanillaBrewIngredient implements Ingredient{
 
     @Override
     public int getCost() {
-        return 0;
+        return this.cost;
     }
 
     @Override
     public String getPotentialCraftingIngredients() {
         return "Not craftable";
     }
-
+    @JsonIgnore
+    @Override
+    public Class<?> getIngredientClass() {
+        return this.ingredientClass;
+    }
+    @Override
+    public void setCost(int costToSet) {
+        this.cost = costToSet;
+    }
 }

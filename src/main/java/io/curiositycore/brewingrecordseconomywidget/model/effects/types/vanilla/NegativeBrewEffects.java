@@ -8,6 +8,8 @@ public enum NegativeBrewEffects implements NegativeEffect {
     WEAKNESS("Weakness",EffectType.COMBAT);
     private String name;
     private EffectType effectType;
+    private Class<?> effectClass = this.getClass();
+
     NegativeBrewEffects(String name, EffectType effectType){
         this.name = name;
         this.effectType = effectType;
@@ -21,5 +23,10 @@ public enum NegativeBrewEffects implements NegativeEffect {
     @Override
     public EffectType getEffectType() {
         return this.effectType;
+    }
+
+    @Override
+    public Class<?> getEffectClass() {
+        return this.effectClass;
     }
 }

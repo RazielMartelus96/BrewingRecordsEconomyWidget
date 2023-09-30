@@ -3,10 +3,12 @@ package io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.curiositycore.brewingrecordseconomywidget.gui.persistance.PersistenceManager;
 import io.curiositycore.brewingrecordseconomywidget.gui.persistance.PersistentData;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.Brew;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewManager;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
+import io.curiositycore.brewingrecordseconomywidget.model.ingredients.IngredientManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 public class BrewConfigData implements PersistentData {
     private String configDataName;
+
     @JsonProperty
     private Map<String, Brew> brewMap = new HashMap<>();
     @JsonProperty
@@ -22,11 +25,17 @@ public class BrewConfigData implements PersistentData {
     public BrewConfigData(String configDataName){
         this.configDataName = configDataName;
     }
+    public BrewConfigData(@JsonProperty("fileName") String configDataName,@JsonProperty("brewMap") Map<String,Brew> brewMap,@JsonProperty("ingredientMap") Map<String,Ingredient> ingredientMap ){
+        this.brewMap = brewMap;
+        this.ingredientMap = ingredientMap;
+        this.configDataName = configDataName;
+    }
     @Override
     public void save(File configFile) {
         try{
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writeValue(configFile,this);
+            PersistenceManager.getInstance().addSavedData(this);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,6 +45,7 @@ public class BrewConfigData implements PersistentData {
     @Override
     public void load() {
         BrewManager.getInstance().reloadBrews(this.brewMap);
+        IngredientManager.getInstance().reloadIngredients(this.ingredientMap);
     }
 
     @Override

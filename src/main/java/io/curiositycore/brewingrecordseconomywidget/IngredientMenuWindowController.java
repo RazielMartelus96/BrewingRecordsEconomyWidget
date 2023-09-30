@@ -9,7 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseButton;
+import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * Controller for the secondary window that opens when the user wishes to analyse, edit and generally interact with the
@@ -50,11 +53,7 @@ public class IngredientMenuWindowController {
      */
     @FXML
     private Button addButton;
-    /**
-     * Button for editing existing ingredients within the table.
-     */
-    @FXML
-    private Button editButton;
+
     /**
      * Button for removing existing ingredients to the table.
      */
@@ -67,12 +66,16 @@ public class IngredientMenuWindowController {
         ingredientCustomNameColumn.setCellValueFactory(ingredient-> new SimpleStringProperty(ingredient.getValue().getPotentialCustomNames()));
         ingredientPotentialMaterialsColumn.setCellValueFactory(ingredient-> new SimpleStringProperty(ingredient.getValue().getPotentialMaterialChoices()));
         ingredientCostColumn.setCellValueFactory(ingredient-> new SimpleIntegerProperty(ingredient.getValue().getCost()).asObject());
+        setEditPropertiesOnColumn(ingredientCostColumn);
+        ingredientTable.setEditable(true);
+
         this.ingredientTable.setRowFactory(tv -> {
             TableRow<Ingredient> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY) {
                     onTableRowClick();
                 }
+
             });
             return row;
         });
@@ -81,7 +84,18 @@ public class IngredientMenuWindowController {
     }
 
     public void onTableRowClick(){
-        this.editButton.setDisable(false);
         this.removeButton.setDisable(false);
+    }
+
+    private void setEditPropertiesOnColumn(TableColumn<Ingredient,Integer> columnToSett){
+        StringConverter<Integer> converter = new IntegerStringConverter();
+        columnToSett.setCellFactory(TextFieldTableCell.forTableColumn(converter));
+        columnToSett.setOnEditCommit(
+                (TableColumn.CellEditEvent<Ingredient, Integer> t) -> {
+                    Ingredient ingredient = t.getRowValue();
+                    ingredient.setCost(t.getNewValue());
+                    IngredientManager.getInstance().editIngredientCost(ingredient.getName(),ingredient.getCost());
+                }
+        );
     }
 }

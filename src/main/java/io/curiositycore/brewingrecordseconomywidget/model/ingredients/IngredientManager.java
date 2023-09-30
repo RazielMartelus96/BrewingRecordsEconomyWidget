@@ -1,6 +1,7 @@
 package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 
 import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
+import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -48,5 +49,15 @@ public class IngredientManager {
     public BrewConfigData addIngredientsToConfigData(BrewConfigData dataToAddTo){
         dataToAddTo.addData(this.ingredientMap);
         return dataToAddTo;
+    }
+    public void reloadIngredients(Map<String, Ingredient> reloadedMap){
+        this.ingredientMap = reloadedMap;
+    }
+
+    public void editIngredientCost(String ingredientName, int cost){
+        Ingredient ingredient = this.ingredientMap.get(ingredientName);
+        ingredient.setCost(cost);
+        BrewManager.getInstance().editBrewCost(ingredient);
+
     }
 }

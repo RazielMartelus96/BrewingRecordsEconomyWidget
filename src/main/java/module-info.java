@@ -10,7 +10,9 @@ module io.curiositycore.brewingrecordseconomywidget {
     opens io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews to com.fasterxml.jackson.databind;
     opens io.curiositycore.brewingrecordseconomywidget.model.ingredients to com.fasterxml.jackson.databind;
     opens io.curiositycore.brewingrecordseconomywidget.model.brew to com.fasterxml.jackson.databind;
-
+    opens io.curiositycore.brewingrecordseconomywidget.model.brew.types to com.fasterxml.jackson.databind;
+    opens io.curiositycore.brewingrecordseconomywidget.model.effects.types.vanilla to com.fasterxml.jackson.databind;
+    opens io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums to com.fasterxml.jackson.databind;
 
     requires org.controlsfx.controls;
     requires org.yaml.snakeyaml;
@@ -19,5 +21,7 @@ module io.curiositycore.brewingrecordseconomywidget {
     exports io.curiositycore.brewingrecordseconomywidget;
     exports io.curiositycore.brewingrecordseconomywidget.model.brew;
     exports io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews;
+    exports io.curiositycore.brewingrecordseconomywidget.model.effects.types.vanilla to com.fasterxml.jackson.databind;
+    exports io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums to com.fasterxml.jackson.databind;
 
 }

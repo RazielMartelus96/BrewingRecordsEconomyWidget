@@ -1,6 +1,9 @@
 package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 
 import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Material;
 
 public class CustomBrewIngredient implements Ingredient{
@@ -9,6 +12,7 @@ public class CustomBrewIngredient implements Ingredient{
     private String[] customNames;
     private int cost;
     private int amount;
+    private Class<?> ingredientClass = this.getClass();
 
     public CustomBrewIngredient(String name, String materialName,String[] customNames, int cost){
         this.name = name;
@@ -16,7 +20,7 @@ public class CustomBrewIngredient implements Ingredient{
         this.customNames = customNames;
         this.cost = cost;
     }
-    public CustomBrewIngredient(String name, String materialName,String customName, int cost){
+    public CustomBrewIngredient(@JsonProperty("name")String name, @JsonProperty("potentialMaterialChoices")String materialName, @JsonProperty("potentialCustomNames") String customName, @JsonProperty("cost")int cost){
         this.name = name;
         this.material = initMaterialArray(materialName);
         this.customNames = new String[]{customName};
@@ -67,8 +71,17 @@ public class CustomBrewIngredient implements Ingredient{
     }
 
     @Override
+    public void setCost(int costToSet) {
+        this.cost = costToSet;
+    }
+    @Override
     public String getPotentialCraftingIngredients() {
         return "Not craftable";
+    }
+    @JsonIgnore
+    @Override
+    public Class<?> getIngredientClass() {
+        return this.ingredientClass;
     }
 
     private String[] initMaterialArray(String materialName){

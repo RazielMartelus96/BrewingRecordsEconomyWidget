@@ -25,6 +25,7 @@ public enum PositiveBrewEffects implements PositiveEffect {
     INCREASE_DAMAGE("Strength",EffectType.COMBAT);
     private String name;
     private EffectType effectType;
+    private Class<?> effectClass = this.getClass();
     PositiveBrewEffects(String name, EffectType effectType){
         this.name = name;
         this.effectType = effectType;
@@ -38,5 +39,10 @@ public enum PositiveBrewEffects implements PositiveEffect {
     @Override
     public EffectType getEffectType() {
         return this.effectType;
+    }
+
+    @Override
+    public Class<?> getEffectClass() {
+        return this.effectClass;
     }
 }
