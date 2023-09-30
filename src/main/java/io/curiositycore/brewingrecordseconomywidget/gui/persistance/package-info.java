@@ -1,2 +1,4 @@
-//TODO this is the package to document within this branch
+/**
+ * Classes relevant to the storing of Application data persistently between sessions.
+ */
 package io.curiositycore.brewingrecordseconomywidget.gui.persistance;

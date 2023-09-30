@@ -15,16 +15,41 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The persistent data of a Configuration Preset saved by a user during a previous session of the Application. Contains
+ * the general Ingredients list and all the Brews defined within said previous session.
+ */
 public class BrewConfigData implements PersistentData {
-    private String configDataName;
+    /**
+     * The name of the pre-set's JSON file.
+     */
+    private final String configDataName;
 
+    /**
+     * Map representing the registered Brews of the preset config file.
+     */
     @JsonProperty
     private Map<String, Brew> brewMap = new HashMap<>();
+    /**
+     * Map representing the general ingredients list of the preset config file.
+     */
     @JsonProperty
     private Map<String, Ingredient> ingredientMap = new HashMap<>();
+
+    /**
+     * Constructor which initialises the Config Data's JSON file name.
+     * @param configDataName The Config Data's file name.
+     */
     public BrewConfigData(String configDataName){
         this.configDataName = configDataName;
     }
+
+    /**
+     * Constructor called during read of a JSON file, to allow for the creation of the pre-set within the application.
+     * @param configDataName The name of the JSON file.
+     * @param brewMap Map representing the defined Brews within the JSON file.
+     * @param ingredientMap Map representing the general Ingredients defined within the JSON file.
+     */
     public BrewConfigData(@JsonProperty("fileName") String configDataName,@JsonProperty("brewMap") Map<String,Brew> brewMap,@JsonProperty("ingredientMap") Map<String,Ingredient> ingredientMap ){
         this.brewMap = brewMap;
         this.ingredientMap = ingredientMap;
