@@ -1,5 +1,6 @@
 package io.curiositycore.brewingrecordseconomywidget.model.brew.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.AbstractBrew;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectType;
@@ -10,15 +11,15 @@ import java.util.Set;
 public class CombatBrew extends AbstractBrew {
 
 
-    protected CombatBrew(String name, int cost, Set<Effect> commandEffects, Set<Ingredient> ingredients) {
-        super(name, cost, commandEffects, ingredients);
+    protected CombatBrew(@JsonProperty("internalName")String internalName, @JsonProperty("name") String name, @JsonProperty("cost") int cost, @JsonProperty("effects") Set<Effect> commandEffects, @JsonProperty("ingredients") Set<Ingredient> ingredients, @JsonProperty("owner") String owner) {
+        super(internalName,name, cost, commandEffects, ingredients,owner);
     }
 
     public static class CombatBrewBuilder extends AbstractBrewBuilder<CombatBrew> {
 
         @Override
         public CombatBrew build() {
-            return new CombatBrew(this.name,this.cost,this.commandEffects,this.ingredients);
+            return new CombatBrew(this.internalName, this.name,this.cost,this.commandEffects,this.ingredients,null);
         }
 
         @Override
