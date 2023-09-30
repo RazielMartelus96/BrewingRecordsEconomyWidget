@@ -26,6 +26,9 @@ public class BrewingRecordsEcononyWidget extends Application {
         stage.show();
     }
 
+    /**
+     * Main class that launches the application, as per the JavaFX library.
+     */
     public static void main(String[] args) {
         launch();
     }
