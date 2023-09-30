@@ -11,15 +11,15 @@ import java.util.Set;
 public class CombatBrew extends AbstractBrew {
 
 
-    protected CombatBrew(@JsonProperty("internalName")String internalName, @JsonProperty("name") String name, @JsonProperty("cost") int cost, @JsonProperty("effects") Set<Effect> commandEffects, @JsonProperty("ingredients") Set<Ingredient> ingredients, @JsonProperty("owner") String owner) {
-        super(internalName,name, cost, commandEffects, ingredients,owner);
+    protected CombatBrew(@JsonProperty("internalName")String internalName, @JsonProperty("name") String name, @JsonProperty("effects") Set<Effect> commandEffects, @JsonProperty("ingredients") Set<Ingredient> ingredients, @JsonProperty("owner") String owner) {
+        super(internalName,name, commandEffects, ingredients,owner);
     }
 
     public static class CombatBrewBuilder extends AbstractBrewBuilder<CombatBrew> {
 
         @Override
         public CombatBrew build() {
-            return new CombatBrew(this.internalName, this.name,this.cost,this.commandEffects,this.ingredients,null);
+            return new CombatBrew(this.internalName, this.name, this.commandEffects,this.ingredients,null);
         }
 
         @Override

@@ -16,9 +16,9 @@ public abstract class AbstractBrew implements Brew{
     protected String name;
     protected int cost;
     protected Set<Effect> effects;
-    protected Set<Ingredient> ingredients = new HashSet<>();
+    protected Set<Ingredient> ingredients;
     protected Class<?> brewClass;
-    protected AbstractBrew(String internalName,String name, int cost, Set<Effect> effects, Set<Ingredient> ingredients,String owner){
+    protected AbstractBrew(String internalName, String name, Set<Effect> effects, Set<Ingredient> ingredients, String owner){
         this.internalName = internalName;
         this.name = name;
         this.ingredients = ingredients;
@@ -43,8 +43,8 @@ public abstract class AbstractBrew implements Brew{
     }
 
     @Override
-    public String setOwner(String ownerToSet) {
-        return this.owner = ownerToSet;
+    public void setOwner(String ownerToSet) {
+        this.owner = ownerToSet;
     }
 
     @Override
@@ -95,17 +95,17 @@ public abstract class AbstractBrew implements Brew{
     }
     @JsonIgnore
     protected int getOverallCost(){
-        int cost = 0;
+        int overallCost = 0;
         for(Ingredient ingredient : this.ingredients){
             try{
-                cost += ingredient.getCost();
+                overallCost += ingredient.getCost();
             }
             catch(NullPointerException e){
                 //Placeholder this is just here to ensure that the loop continues
 
             }
         }
-        return cost;
+        return overallCost;
     }
     public abstract static class AbstractBrewBuilder<T extends Brew> implements BrewBuilder<T> {
         @JsonIgnore
@@ -142,9 +142,6 @@ public abstract class AbstractBrew implements Brew{
             if(commandEffect == null){
                 return this;
             }
-            /*if(!isCorrectEffectType(commandEffect) && !(commandEffect instanceof NegativeEffect)){
-                throw new RuntimeException("Effect:'" + commandEffect + "' was not of the correct type");
-            }*/
             this.commandEffects.add(commandEffect);
             return this;
         }
