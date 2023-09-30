@@ -14,6 +14,7 @@ import javafx.scene.input.MouseButton;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
+
 /**
  * Controller for the secondary window that opens when the user wishes to analyse, edit and generally interact with the
  * set ingredients list (as defined by the chosen configuration file).
@@ -48,6 +49,7 @@ public class IngredientMenuWindowController {
     @FXML
     private TableColumn<Ingredient,Integer> ingredientCostColumn;
 
+    //TODO functionality of this button is required.
     /**
      * Button for adding additional ingredients to the table.
      */
@@ -60,13 +62,16 @@ public class IngredientMenuWindowController {
     @FXML
     private Button removeButton;
 
+    /**
+     * Occurs upon initialisation of the window.
+     */
     @FXML
     public void initialize(){
         ingredientNameColumn.setCellValueFactory(ingredient-> new SimpleStringProperty(ingredient.getValue().getName()));
         ingredientCustomNameColumn.setCellValueFactory(ingredient-> new SimpleStringProperty(ingredient.getValue().getPotentialCustomNames()));
         ingredientPotentialMaterialsColumn.setCellValueFactory(ingredient-> new SimpleStringProperty(ingredient.getValue().getPotentialMaterialChoices()));
         ingredientCostColumn.setCellValueFactory(ingredient-> new SimpleIntegerProperty(ingredient.getValue().getCost()).asObject());
-        setEditPropertiesOnColumn(ingredientCostColumn);
+        setEditPropertiesOnColumn();
         ingredientTable.setEditable(true);
 
         this.ingredientTable.setRowFactory(tv -> {
@@ -83,14 +88,23 @@ public class IngredientMenuWindowController {
 
     }
 
+    /**
+     * Handles enabling of the remove button when an item within the Ingredient Table has been selected.
+     */
     public void onTableRowClick(){
         this.removeButton.setDisable(false);
     }
 
-    private void setEditPropertiesOnColumn(TableColumn<Ingredient,Integer> columnToSett){
+    //TODO consider creating a more generalised version of this method in future, and potentially adding it to a type of
+    //     util class.
+    /**
+     * Defines the edit properties for the Cost Column of a Brew Table, allowing for users to edit the cost of the
+     * selected ingredient.
+     */
+    private void setEditPropertiesOnColumn(){
         StringConverter<Integer> converter = new IntegerStringConverter();
-        columnToSett.setCellFactory(TextFieldTableCell.forTableColumn(converter));
-        columnToSett.setOnEditCommit(
+        this.ingredientCostColumn.setCellFactory(TextFieldTableCell.forTableColumn(converter));
+        this.ingredientCostColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Ingredient, Integer> t) -> {
                     Ingredient ingredient = t.getRowValue();
                     ingredient.setCost(t.getNewValue());

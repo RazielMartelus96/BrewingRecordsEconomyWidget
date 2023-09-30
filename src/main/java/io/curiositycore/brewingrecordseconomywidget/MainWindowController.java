@@ -25,45 +25,102 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Controller responsible for the functionality of the main JavaFX windows. Main responsibilities include the population
+ * of the ingredient and brew tables, along with event handling of the various menu items.
+ */
 public class MainWindowController {
-    @FXML
-    private TableView<Ingredient> ingredientTable;
-    @FXML
-    private TableColumn<Ingredient, String> ingredientNameColumn;
-    @FXML
-    private TableColumn<Ingredient, Integer> ingredientAmountColumn;
-    @FXML
-    private TableColumn<Ingredient, Integer> ingredientCostColumn;
-    @FXML
-    private TableColumn<Ingredient, String> ingredientCraftingMaterialsColumn;
+    /**
+     * Table that contains all the brews within the currently loaded configuration.
+     */
     @FXML
     private TableView<Brew> brewTable;
+
+    /**
+     * Column that defines the internal name of a Brew.
+     */
     @FXML
     private TableColumn<Brew,String> brewInternalNameColumn;
+
+    /**
+     * Column that defines the in-game name of a Brew.
+     */
     @FXML
     private TableColumn<Brew, String> brewNameColumn;
+
+    /**
+     * Column that defines the overall cost of the Brew (in terms of ingredients)
+     */
     @FXML
     private TableColumn<Brew, Integer> brewCostColumn;
-    @FXML
-    private TableColumn<Brew, String> brewNegativeEffectsColumn;
+
+    /**
+     * Column that defines the various positive effects that a Brew contains.
+     */
     @FXML
     private TableColumn<Brew, String> brewPositiveEffectsColumn;
+
+    /**
+     * Column that defines the various negative effects that a Brew contains.
+     */
+    @FXML
+    private TableColumn<Brew, String> brewNegativeEffectsColumn;
+
+    /**
+     * Column that defines the player that owns the Brew.
+     */
     @FXML
     private TableColumn<Brew, String> brewOwnerColumn;
 
+    /**
+     * Table that contains all the ingredients that are within the brew currently selected in the Brew Table.
+     */
+    @FXML
+    private TableView<Ingredient> ingredientTable;
+
+    /**
+     * Column that defines the name of the ingredient.
+     */
+    @FXML
+    private TableColumn<Ingredient, String> ingredientNameColumn;
+
+    /**
+     * Column that defines the amount of the ingredient required for the specified Brew.
+     */
+    @FXML
+    private TableColumn<Ingredient, Integer> ingredientAmountColumn;
+
+    /**
+     * Column that defines the overall cost of the ingredient (amount*base cost) required for the specified Brew.
+     */
+    @FXML
+    private TableColumn<Ingredient, Integer> ingredientCostColumn;
+
+    /**
+     * Column that defines the crafting materials required to make this ingredient.
+     */
+    @FXML
+    private TableColumn<Ingredient, String> ingredientCraftingMaterialsColumn;
+
+    /**
+     * The Menu that shows all the recently opened configs (presets that have been saved previously in the application)
+     */
     @FXML
     private Menu openRecentConfigMenu;
 
+    /**
+     * Occurs upon initialisation of the window.
+     * @throws IOException
+     */
     @FXML
     public void initialize() throws IOException {
         PersistenceManager.getInstance().readAllDataToCache(BrewConfigData.class);
         createRecentConfigMenuItems();
         BrewFactory brewFactory = new BrewFactory("/config.yml");
-        ObservableList<Brew> brewData = FXCollections.observableList(brewFactory.buildBrewSet().stream().filter(Objects::nonNull).sorted(Comparator.comparing(Brew::getInternalName)).toList());
+        brewFactory.buildBrewSet();
         brewInternalNameColumn.setCellValueFactory(new PropertyValueFactory<>("internalName"));
 
         brewNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -73,7 +130,7 @@ public class MainWindowController {
         brewNegativeEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getNegativeEffectsAsString()));
         brewCostColumn.setCellValueFactory(brew-> new SimpleIntegerProperty(brew.getValue().getCost()).asObject());
         brewOwnerColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getOwner()));
-        setEditPropertiesOnColumn(brewOwnerColumn);
+        setEditPropertiesOnOwnerColumn();
         brewTable.setEditable(true);
         }
         catch (NullPointerException nullPointerException){
@@ -95,6 +152,10 @@ public class MainWindowController {
         BrewManager.getInstance().setTableToBrews(brewTable);
     }
 
+    /**
+     * Handler that loads and displays the Ingredients table for the specified Brew.
+     * @param brewOnRow The brew that is currently selected within the Brew Table.
+     */
     public void onRowClick(Brew brewOnRow){
         ingredientNameColumn.setCellValueFactory(ingredient-> new SimpleStringProperty(ingredient.getValue().getName()));
         ingredientCostColumn.setCellValueFactory(ingredient-> new SimpleIntegerProperty(ingredient.getValue().getCost()).asObject());
@@ -104,6 +165,11 @@ public class MainWindowController {
         this.ingredientTable.setItems(ingredientData);
     }
 
+    /**
+     * Handles when the IngredientsList Menu Item is clicked. This loads the Ingredient Menu, as controlled by the
+     * {@linkplain IngredientMenuWindowController Ingredient Menu Controller}.
+     * @throws IOException
+     */
     @FXML
     public void onIngredientsListOpen() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ingredient-menu-window.fxml"));
@@ -114,6 +180,10 @@ public class MainWindowController {
         stage.show();
     }
 
+    /**
+     * Saves the current preset to a JSON file for the sake of persistence. This file can be called via utilising the
+     * "Open Recent Config" menu item.
+     */
     @FXML
     public void saveBrewsToPersistentData(){
         TextInputDialog dialog = new SaveDialogBox();
@@ -128,6 +198,9 @@ public class MainWindowController {
         configDataToSave.save(fileToSave);
     }
 
+    /**
+     * Creates the menu items to populate the "Open Recent Config" nested menu within the File Menu.
+     */
     private void createRecentConfigMenuItems(){
         List<String> configDataNames = PersistenceManager.getInstance().getFileNames();
         if(configDataNames == null){
@@ -143,14 +216,17 @@ public class MainWindowController {
             this.openRecentConfigMenu.getItems().add(menuItem);
         }
     }
-    private void setEditPropertiesOnColumn(TableColumn<Brew,String> columnToSett){
-        columnToSett.setCellFactory(TextFieldTableCell.forTableColumn());
-        columnToSett.setOnEditCommit(
-                (TableColumn.CellEditEvent<Brew, String> t) -> {
 
-                    t.getRowValue().setOwner(t.getNewValue());
-                }
-        );
+    //TODO consider creating a more generalised version of this method in future, and potentially adding it to a type of
+    //     util class.
+    /**
+     * Defines the properties for the Owner Column of a Brew Table, allowing for users to edit who owns the Brew.
+     */
+    private void setEditPropertiesOnOwnerColumn(){
+        this.brewOwnerColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        this.brewOwnerColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Brew, String> t) ->
+                        t.getRowValue().setOwner(t.getNewValue()));
 
     }
 

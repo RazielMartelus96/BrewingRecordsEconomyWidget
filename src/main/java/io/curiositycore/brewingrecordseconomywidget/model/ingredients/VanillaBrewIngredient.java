@@ -3,6 +3,7 @@ package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Material;
+//TODO good example for KK to potentially have a go at doing documentation for
 
 public class VanillaBrewIngredient implements Ingredient ,Cloneable{
     private Class<?> ingredientClass = this.getClass();
