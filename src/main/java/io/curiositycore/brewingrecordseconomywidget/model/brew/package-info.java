@@ -1,2 +1,4 @@
-//TODO this is the package to be completed in this branch
+/**
+ * Classes relevant to the functionality and handling of Brews within Application.
+ */
 package io.curiositycore.brewingrecordseconomywidget.model.brew;
