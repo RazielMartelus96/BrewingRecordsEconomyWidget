@@ -16,7 +16,7 @@ public class RoleplayBrew extends AbstractBrew {
 
         @Override
         public RoleplayBrew build() {
-            return new RoleplayBrew(this.internalName, this.name, this.commandEffects,this.ingredients,null);
+            return new RoleplayBrew(this.internalName, this.name, this.effects,this.ingredients,null);
         }
 
     }

@@ -18,7 +18,7 @@ public class CombatBrew extends AbstractBrew {
 
         @Override
         public CombatBrew build() {
-            return new CombatBrew(this.internalName, this.name, this.commandEffects,this.ingredients,null);
+            return new CombatBrew(this.internalName, this.name, this.effects,this.ingredients,null);
         }
 
     }

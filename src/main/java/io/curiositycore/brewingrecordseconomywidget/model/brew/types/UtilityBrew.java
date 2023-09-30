@@ -16,7 +16,7 @@ public class UtilityBrew extends AbstractBrew {
 
         @Override
         public UtilityBrew build() {
-            return new UtilityBrew(this.internalName, this.name, this.commandEffects,this.ingredients,null);
+            return new UtilityBrew(this.internalName, this.name, this.effects,this.ingredients,null);
         }
 
     }
