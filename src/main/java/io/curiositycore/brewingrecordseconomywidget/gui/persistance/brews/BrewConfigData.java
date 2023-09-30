@@ -35,7 +35,7 @@ public class BrewConfigData implements PersistentData {
         try{
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writeValue(configFile,this);
-            PersistenceManager.getInstance().addSavedData(this);
+            PersistenceManager.getInstance().register(this);
 
         } catch (IOException e) {
             e.printStackTrace();
