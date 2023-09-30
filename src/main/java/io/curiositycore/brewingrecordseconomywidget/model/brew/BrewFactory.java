@@ -19,14 +19,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * <p>Factory responsible for the construction of {@linkplain Brew} and {@linkplain Ingredient} instances within a
+ * specified Brewery Plugin Config File.
+ * </p>
+ * Factory also registers the constructed instances into their respective Managers.
+ *
+ */
 public class BrewFactory {
+    /**
+     * Set of Brews constructed by the Factory.
+     */
     private Set<Brew> brewSet = new HashSet<>();
 
+    /**
+     * The path to the currently selected Brewery Plugin Config File.
+     */
     private String filePath;
+
+    /**
+     * Constructor which initialises the path to the Brewery Plugin Config File.
+     * @param filePath The path to the currently selected Brewery Plugin Config File.
+     */
     public BrewFactory(String filePath){
         this.filePath = filePath;
     }
 
+    /**
+     * Build all the Brews contained within the Factory's Brewery Plugin Config File.
+     * @return The set of Constructed Brews.
+     */
     public Set<Brew> buildBrewSet(){
         BrewManager brewManager = BrewManager.getInstance();
         Map<String,Object> configMap = YamlParser.getConfigMap(this.filePath);
@@ -50,6 +72,12 @@ public class BrewFactory {
         return this.brewSet;
     }
 
+    /**
+     * Constructs a brew from a single Configuration Section of the Factory's Config File.
+     * @param brewMap Map representing the Configuration Section.
+     * @param internalName The internal name of the Brew from the Config File.
+     * @return The constructed Brew.
+     */
     private Brew getBrewFromConfigSectionMap(Map<String, Object> brewMap, String internalName) {
         List<String> commands = (List<String>) brewMap.get("servercommands");
         List<String> effectNames = (List<String>) brewMap.get("effects");
@@ -71,7 +99,6 @@ public class BrewFactory {
             for (String effectName : effectNames) {
                 Effect brewEffect = getEffectFromName(effectName);
                 if(brewEffect == null){
-                    System.out.println("The effect: '"+effectName+"' is not defined");
                     return null;
                 }
                 if (brewEffect.getEffectType().equals(EffectType.COMBAT)) {
@@ -85,7 +112,12 @@ public class BrewFactory {
         }
         return buildRoleplayBrew(brewMap,internalName);
     }
-    //TODO add these to a utility class
+
+    /**
+     * Gets a Brew Effect based on the name provided.
+     * @param effectName The name of the Effect to get.
+     * @return The specified Effect.
+     */
     private Effect getEffectFromName(String effectName) {
         for (PositiveBrewEffects positiveBrewEffects : PositiveBrewEffects.values()) {
             String trueEffectName = effectName.substring(0,effectName.indexOf("/"));
@@ -100,6 +132,11 @@ public class BrewFactory {
         }
         return null;
     }
+    /**
+     * Gets a Brew Command Effect based on the name provided.
+     * @param commandName The name of the Command Effect to get.
+     * @return The specified Command Effect.
+     */
     private Effect getEffectCommandFromName(String commandName){
 
         for(PositiveBrewCommandEffect positiveBrewCommandEffect : PositiveBrewCommandEffect.values()){
@@ -110,6 +147,14 @@ public class BrewFactory {
         return null;
     }
 
+    /**
+     * Initialises a {@linkplain CustomBrewIngredient Custom Brew Ingredient} based on a Configuration Section from
+     * the Brewery Plugin Config File.
+     * @param ingredientMap Map representing the Ingredient's Configuration Section.
+     * @param ingredientInternalName The Ingredient's internal name.
+     * @return The constructed Custom Brew Ingredient.
+     * @throws NullPointerException
+     */
     private Ingredient initCustomIngredient(Map<String,Object> ingredientMap, String ingredientInternalName) throws NullPointerException{
         try{
             if(ingredientMap.get("name") instanceof String[] ingredientCustomNames){
@@ -135,6 +180,12 @@ public class BrewFactory {
         }
         return new CustomBrewIngredient(ingredientInternalName);
     }
+
+    /**
+     * Get a Brew Ingredient from its specified name.
+     * @param ingredientName The name of the Ingredient.
+     * @return The specified Ingredient.
+     */
     private Ingredient getIngredientFromName(String ingredientName){
 
         if(ingredientName.contains("Brewery")){
@@ -149,17 +200,45 @@ public class BrewFactory {
         return IngredientManager.getInstance().getCustomIngredient(ingredientName);
     }
 
+    /**
+     * Utilise a specified Configuration section to construct a Combat Brew.
+     * @param combatBrewMap Map representing the Combat Brew's Configuration Section.
+     * @param internalName The internal name of the Combat Brew.
+     * @return The constructed Combat Brew
+     */
     private CombatBrew buildCombatBrew(Map<String, Object> combatBrewMap,String internalName) {
         return buildBrew(combatBrewMap, new CombatBrew.CombatBrewBuilder(), internalName).build();
     }
 
+    /**
+     * Utilise a specified Configuration section to construct a Roleplay Brew.
+     * @param roleplayBrewMap Map representing the Roleplay Brew's Configuration Section.
+     * @param internalName The internal name of the Roleplay Brew.
+     * @return The constructed Roleplay Brew
+     */
     private RoleplayBrew buildRoleplayBrew(Map<String, Object> roleplayBrewMap,String internalName) {
         return buildBrew(roleplayBrewMap, new RoleplayBrew.RoleplayBrewBuilder(), internalName).build();
     }
 
+    /**
+     * Utilise a specified Configuration section to construct a Utility Brew.
+     * @param utilityBrewMap Map representing the Utility Brew's Configuration Section.
+     * @param internalName The internal name of the Utility Brew.
+     * @return The constructed Utility Brew
+     */
     private UtilityBrew buildUtilityBrew(Map<String, Object> utilityBrewMap,String internalName) {
         return buildBrew(utilityBrewMap, new UtilityBrew.UtilityBrewBuilder(), internalName).build();
     }
+
+    /**
+     * Construct a brew utilising a specified AbstractBrewBuilder implementation from a Child Class of the {@linkplain
+     * io.curiositycore.brewingrecordseconomywidget.model.brew.AbstractBrew.AbstractBrewBuilder}.
+     * @param brewMap Map representing the Configuration Section of the Brew.
+     * @param brewBuilder The BrewBuilder to utilise.
+     * @param brewInternalName The internal name of the Brew.
+     * @return The constructed Brew.
+     * @param <T> Type parameter of the Abstract Brew Builder to utilise.
+     */
     private <T extends AbstractBrew.AbstractBrewBuilder> T buildBrew(Map<String, Object> brewMap, T brewBuilder,String brewInternalName) {
         brewBuilder.setInternalName(brewInternalName);
         String brewName = brewMap.get("name").toString();
@@ -173,14 +252,14 @@ public class BrewFactory {
             ((List<String>) brewMap.get("servercommands")).forEach(commandName ->
                     brewBuilder.addEffect(getEffectCommandFromName(commandName)));
         } catch (NullPointerException nullPointerException) {
-            System.out.println("The brew called: " + brewName + " has no commands");
+            //Placeholder
         }
 
         try {
             ((List<String>) brewMap.get("effects")).forEach(commandName ->
                     brewBuilder.addEffect(getEffectFromName(commandName)));
         } catch (NullPointerException nullPointerException) {
-            System.out.println("The brew called: " + brewName + " has no vanilla commands");
+            //Placeholder
         }
 
         ((List<String>) brewMap.get("ingredients")).forEach(ingredientName ->
