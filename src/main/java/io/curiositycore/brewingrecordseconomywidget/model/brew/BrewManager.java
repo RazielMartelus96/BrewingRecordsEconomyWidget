@@ -4,7 +4,6 @@ import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewCo
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
 import java.util.Comparator;
@@ -58,7 +57,12 @@ public class BrewManager {
         return dataToAddTo;
     }
     public void editBrewCost(Ingredient ingredient){
-        this.brewMap.values().stream().filter(brew-> brew.getIngredients().contains(ingredient)).forEach(Brew::reloadCosts);
+        this.brewMap.values()
+                .stream()
+                .filter(brew-> brew.getIngredients()
+                        .stream()
+                        .anyMatch(brewIngredient -> brewIngredient.getName().equals(ingredient.getName())))
+                .forEach(brew1 -> brew1.reloadCosts(ingredient));
         setTableToBrews();
     }
 

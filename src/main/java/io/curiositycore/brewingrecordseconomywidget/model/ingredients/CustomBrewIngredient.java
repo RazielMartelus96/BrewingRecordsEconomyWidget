@@ -4,13 +4,12 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.bukkit.Material;
-
-public class CustomBrewIngredient implements Ingredient{
+public class CustomBrewIngredient implements Ingredient, Cloneable{
     private String name;
     private String[] material;
     private String[] customNames;
     private int cost;
+    private int amountCost;
     private int amount;
     private Class<?> ingredientClass = this.getClass();
 
@@ -62,12 +61,28 @@ public class CustomBrewIngredient implements Ingredient{
 
     @Override
     public int getAmount() {
-        return 0;
+        return this.amount;
+    }
+
+    @Override
+    public void setAmount(int amountToSet) {
+        this.amount = amountToSet;
     }
 
     @Override
     public int getCost() {
+        if(amountCost != 0 && amount != 0){
+            return amountCost;
+        } else if (amount!= 0) {
+            amountCost = amount*cost;
+            return amountCost;
+        }
         return this.cost;
+    }
+
+    @Override
+    public int getAmountCost() {
+        return this.amountCost;
     }
 
     @Override
@@ -84,11 +99,25 @@ public class CustomBrewIngredient implements Ingredient{
         return this.ingredientClass;
     }
 
+    @Override
+    public Ingredient cloneable() {
+        try {
+            return (CustomBrewIngredient) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); // Should not happen
+        }
+    }
+
     private String[] initMaterialArray(String materialName){
         if(!materialName.contains("[")){
             return new String[]{materialName};
         }
         return materialName.substring(1, materialName.length() - 1).split(", ");
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
 

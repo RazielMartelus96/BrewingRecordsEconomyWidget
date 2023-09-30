@@ -1,8 +1,6 @@
 package io.curiositycore.brewingrecordseconomywidget.model.brew;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.NegativeEffect;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.PositiveEffect;
@@ -11,31 +9,42 @@ import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "brewClass")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = io.curiositycore.brewingrecordseconomywidget.model.brew.types.RoleplayBrew.class, name = "io.curiositycore.brewingrecordseconomywidget.model.brew.types.RoleplayBrew"),
-        @JsonSubTypes.Type(value = io.curiositycore.brewingrecordseconomywidget.model.brew.types.CombatBrew.class, name = "io.curiositycore.brewingrecordseconomywidget.model.brew.types.CombatBrew"),
-        @JsonSubTypes.Type(value = io.curiositycore.brewingrecordseconomywidget.model.brew.types.UtilityBrew.class, name = "io.curiositycore.brewingrecordseconomywidget.model.brew.types.UtilityBrew")
-})
+
 public abstract class AbstractBrew implements Brew{
+    protected String owner;
     protected String internalName;
     protected String name;
     protected int cost;
     protected Set<Effect> effects;
     protected Set<Ingredient> ingredients = new HashSet<>();
     protected Class<?> brewClass;
-    protected AbstractBrew(String internalName,String name, int cost, Set<Effect> effects, Set<Ingredient> ingredients){
+    protected AbstractBrew(String internalName,String name, int cost, Set<Effect> effects, Set<Ingredient> ingredients,String owner){
         this.internalName = internalName;
         this.name = name;
         this.ingredients = ingredients;
         this.cost = getOverallCost();
         this.effects = effects;
         this.brewClass = this.getClass();
+        this.owner = owner;
+
     }
 
     @Override
     public String getInternalName() {
         return this.internalName;
+    }
+
+    @Override
+    public String getOwner() {
+        if(this.owner == null){
+            return "-";
+        }
+        return this.owner;
+    }
+
+    @Override
+    public String setOwner(String ownerToSet) {
+        return this.owner = ownerToSet;
     }
 
     @Override
@@ -49,7 +58,8 @@ public abstract class AbstractBrew implements Brew{
     }
 
     @Override
-    public void reloadCosts() {
+    public void reloadCosts(Ingredient newIngredient) {
+        this.ingredients.stream().filter(ingredient -> ingredient.getName().equals(newIngredient.getName())).findFirst().orElseThrow().setCost(newIngredient.getCost());
         this.cost = getOverallCost();
     }
 
@@ -140,8 +150,10 @@ public abstract class AbstractBrew implements Brew{
         }
         @JsonIgnore
         @Override
-        public AbstractBrewBuilder<T> addIngredient(Ingredient ingredient) {
-            this.ingredients.add(ingredient);
+        public AbstractBrewBuilder<T> addIngredient(Ingredient ingredient, int amount) {
+            Ingredient clonedIngredient = ingredient.cloneable();
+            clonedIngredient.setAmount(amount);
+            this.ingredients.add(clonedIngredient);
             return this;
         }
 

@@ -136,9 +136,10 @@ public class BrewFactory {
         return new CustomBrewIngredient(ingredientInternalName);
     }
     private Ingredient getIngredientFromName(String ingredientName){
+
         if(ingredientName.contains("Brewery")){
             String brewName = ingredientName.replace("Brewery:","");
-            return new CustomBrewIngredient(brewName.substring(0,brewName.indexOf("/")));
+            return new CustomBrewIngredient(brewName);
         }
         if(!IngredientManager.getInstance().isRegistered(ingredientName)){
             VanillaBrewIngredient vanillaBrewIngredient = new VanillaBrewIngredient(ingredientName);
@@ -183,7 +184,7 @@ public class BrewFactory {
         }
 
         ((List<String>) brewMap.get("ingredients")).forEach(ingredientName ->
-                brewBuilder.addIngredient(getIngredientFromName(ingredientName)));
+                brewBuilder.addIngredient(getIngredientFromName(ingredientName), Integer.parseInt(ingredientName.substring(ingredientName.indexOf("/")+1,ingredientName.length()))));
 
         return brewBuilder;
     }

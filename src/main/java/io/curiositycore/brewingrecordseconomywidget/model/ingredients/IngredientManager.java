@@ -30,7 +30,6 @@ public class IngredientManager {
     }
 
     public boolean isRegistered(String ingredientNameToCheck){
-        String trueIngredientName = ingredientNameToCheck.substring(0,ingredientNameToCheck.indexOf("/")).replace("-"," ");
         return this.ingredientMap.values().stream()
                 .anyMatch(ingredient ->
                         ingredient.getName().contains(ingredientNameToCheck.substring(0,ingredientNameToCheck.indexOf("/")))
@@ -39,6 +38,9 @@ public class IngredientManager {
     }
 
     public Ingredient getCustomIngredient(String ingredientName){
+        if(ingredientName.contains("/")){
+            ingredientName = ingredientName.substring(0,ingredientName.indexOf("/"));
+        }
         return this.ingredientMap.get(ingredientName);
     }
     public void addIngredientsToTable(TableView<Ingredient> ingredientTableToAdd){

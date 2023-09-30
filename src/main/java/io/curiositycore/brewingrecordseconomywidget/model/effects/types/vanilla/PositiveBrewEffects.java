@@ -4,7 +4,9 @@ import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectTy
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.PositiveEffect;
 
 public enum PositiveBrewEffects implements PositiveEffect {
-    STRENGTH("Strength",EffectType.COMBAT), FAST_DIGGING("Haste",EffectType.UTILITY),
+    STRENGTH("Strength",EffectType.COMBAT),
+    HEAL("Heal",EffectType.COMBAT),
+    FAST_DIGGING("Haste",EffectType.UTILITY),
     CONDUIT_POWER("Conduit Power",EffectType.UTILITY),
     LUCK("Luck",EffectType.UTILITY),
     UNLUCK("Bad Luck",EffectType.UTILITY),

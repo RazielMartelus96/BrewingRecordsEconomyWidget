@@ -18,8 +18,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +53,9 @@ public class MainWindowController {
     @FXML
     private TableColumn<Brew, String> brewPositiveEffectsColumn;
     @FXML
+    private TableColumn<Brew, String> brewOwnerColumn;
+
+    @FXML
     private Menu openRecentConfigMenu;
 
     @FXML
@@ -62,12 +67,18 @@ public class MainWindowController {
         brewInternalNameColumn.setCellValueFactory(new PropertyValueFactory<>("internalName"));
 
         brewNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
         try{
         brewPositiveEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getPositiveEffectsAsString()));
         brewNegativeEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getNegativeEffectsAsString()));
         brewCostColumn.setCellValueFactory(brew-> new SimpleIntegerProperty(brew.getValue().getCost()).asObject());
+        brewOwnerColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getOwner()));
+        setEditPropertiesOnColumn(brewOwnerColumn);
+        brewTable.setEditable(true);
         }
-        catch (NullPointerException nullPointerException){}
+        catch (NullPointerException nullPointerException){
+            nullPointerException.printStackTrace();
+        }
         brewTable.setRowFactory(tv -> {
             TableRow<Brew> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -131,6 +142,16 @@ public class MainWindowController {
             });
             this.openRecentConfigMenu.getItems().add(menuItem);
         }
+    }
+    private void setEditPropertiesOnColumn(TableColumn<Brew,String> columnToSett){
+        columnToSett.setCellFactory(TextFieldTableCell.forTableColumn());
+        columnToSett.setOnEditCommit(
+                (TableColumn.CellEditEvent<Brew, String> t) -> {
+
+                    t.getRowValue().setOwner(t.getNewValue());
+                }
+        );
+
     }
 
 }

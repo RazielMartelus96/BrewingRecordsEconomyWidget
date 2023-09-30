@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Material;
 
-public class VanillaBrewIngredient implements Ingredient{
+public class VanillaBrewIngredient implements Ingredient ,Cloneable{
     private Class<?> ingredientClass = this.getClass();
 
     private Material ingredient;
     private int cost = 0;
+    private int amount;
+    private int amountCost;
     public VanillaBrewIngredient(@JsonProperty("potentialMaterialChoices") String ingredientName){
         if(ingredientName.contains("/")){
             this.ingredient = Material.valueOf(ingredientName.toUpperCase().substring(0,ingredientName.indexOf("/")));
@@ -36,11 +38,25 @@ public class VanillaBrewIngredient implements Ingredient{
 
     @Override
     public int getAmount() {
-        return 0;
+        return this.amount;
     }
 
     @Override
+    public void setAmount(int amountToSet) {
+        this.amount = amountToSet;
+    }
+    @Override
+    public int getAmountCost() {
+        return this.cost*this.amount;
+    }
+    @Override
     public int getCost() {
+        if(amountCost != 0 && amount != 0){
+            return amountCost;
+        } else if (amount!= 0) {
+            amountCost = amount*cost;
+            return amountCost;
+        }
         return this.cost;
     }
 
@@ -56,5 +72,21 @@ public class VanillaBrewIngredient implements Ingredient{
     @Override
     public void setCost(int costToSet) {
         this.cost = costToSet;
+        if(amountCost != 0){
+            amountCost = amount*cost;
+        }
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+    @Override
+    public Ingredient cloneable() {
+        try {
+            return (VanillaBrewIngredient) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); // Should not happen
+        }
     }
 }

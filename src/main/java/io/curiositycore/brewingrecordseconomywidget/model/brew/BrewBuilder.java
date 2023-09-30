@@ -9,6 +9,6 @@ public interface BrewBuilder<T extends Brew> extends Builder<T> {
     BrewBuilder setName(String name);
     BrewBuilder setCost(int cost);
     BrewBuilder addEffect(Effect commandEffect);
-    BrewBuilder addIngredient(Ingredient ingredient);
+    BrewBuilder addIngredient(Ingredient ingredient, int amount);
 
 }
