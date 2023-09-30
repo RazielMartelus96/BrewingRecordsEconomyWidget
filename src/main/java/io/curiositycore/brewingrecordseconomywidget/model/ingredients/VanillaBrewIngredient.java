@@ -1,13 +1,27 @@
 package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Material;
 //TODO good example for KK to potentially have a go at doing documentation for
 
-public class VanillaBrewIngredient implements Ingredient{
+public class VanillaBrewIngredient implements Ingredient ,Cloneable{
+    private Class<?> ingredientClass = this.getClass();
+
     private Material ingredient;
-    public VanillaBrewIngredient(String ingredientName){
-        this.ingredient = Material.valueOf(ingredientName.toUpperCase().substring(0,ingredientName.indexOf("/")));
+    private int cost = 0;
+    private int amount;
+    private int amountCost;
+    public VanillaBrewIngredient(@JsonProperty("potentialMaterialChoices") String ingredientName){
+        if(ingredientName.contains("/")){
+            this.ingredient = Material.valueOf(ingredientName.toUpperCase().substring(0,ingredientName.indexOf("/")));
+        } else{
+
+            this.ingredient = Material.valueOf(ingredientName.toUpperCase().replace(" ","_"));
+        }
     }
+
+
     @Override
     public String getName() {
         return this.ingredient.name().toLowerCase().replace("_", " ");
@@ -15,7 +29,7 @@ public class VanillaBrewIngredient implements Ingredient{
 
     @Override
     public String getPotentialMaterialChoices() {
-        return this.ingredient.name().toLowerCase().replace("_","");
+        return this.ingredient.name().toLowerCase().replace("_"," ");
     }
 
     @Override
@@ -25,17 +39,55 @@ public class VanillaBrewIngredient implements Ingredient{
 
     @Override
     public int getAmount() {
-        return 0;
+        return this.amount;
     }
 
     @Override
+    public void setAmount(int amountToSet) {
+        this.amount = amountToSet;
+    }
+    @Override
+    public int getAmountCost() {
+        return this.cost*this.amount;
+    }
+    @Override
     public int getCost() {
-        return 0;
+        if(amountCost != 0 && amount != 0){
+            return amountCost;
+        } else if (amount!= 0) {
+            amountCost = amount*cost;
+            return amountCost;
+        }
+        return this.cost;
     }
 
     @Override
     public String getPotentialCraftingIngredients() {
         return "Not craftable";
     }
+    @JsonIgnore
+    @Override
+    public Class<?> getIngredientClass() {
+        return this.ingredientClass;
+    }
+    @Override
+    public void setCost(int costToSet) {
+        this.cost = costToSet;
+        if(amountCost != 0){
+            amountCost = amount*cost;
+        }
+    }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+    @Override
+    public Ingredient cloneable() {
+        try {
+            return (VanillaBrewIngredient) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); // Should not happen
+        }
+    }
 }

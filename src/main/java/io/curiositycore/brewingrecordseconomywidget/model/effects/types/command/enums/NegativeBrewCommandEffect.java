@@ -10,6 +10,8 @@ public enum NegativeBrewCommandEffect implements NegativeCommandEffect, Negative
     private String effectName;
     private String commandString;
     private EffectType effectType;
+    private Class<?> effectClass = this.getClass();
+
     NegativeBrewCommandEffect(String effectName, String commandString, EffectType effectType){
         this.effectName = effectName;
         this.commandString = commandString;
@@ -29,5 +31,10 @@ public enum NegativeBrewCommandEffect implements NegativeCommandEffect, Negative
     @Override
     public EffectType getEffectType() {
         return this.effectType;
+    }
+
+    @Override
+    public Class<?> getEffectClass() {
+        return this.effectClass;
     }
 }

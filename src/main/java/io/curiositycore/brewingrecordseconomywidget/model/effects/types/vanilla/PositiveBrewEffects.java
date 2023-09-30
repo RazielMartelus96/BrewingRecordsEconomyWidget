@@ -4,7 +4,9 @@ import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectTy
 import io.curiositycore.brewingrecordseconomywidget.model.effects.types.PositiveEffect;
 
 public enum PositiveBrewEffects implements PositiveEffect {
-    STRENGTH("Strength",EffectType.COMBAT), FAST_DIGGING("Haste",EffectType.UTILITY),
+    STRENGTH("Strength",EffectType.COMBAT),
+    HEAL("Heal",EffectType.COMBAT),
+    FAST_DIGGING("Haste",EffectType.UTILITY),
     CONDUIT_POWER("Conduit Power",EffectType.UTILITY),
     LUCK("Luck",EffectType.UTILITY),
     UNLUCK("Bad Luck",EffectType.UTILITY),
@@ -25,6 +27,7 @@ public enum PositiveBrewEffects implements PositiveEffect {
     INCREASE_DAMAGE("Strength",EffectType.COMBAT);
     private String name;
     private EffectType effectType;
+    private Class<?> effectClass = this.getClass();
     PositiveBrewEffects(String name, EffectType effectType){
         this.name = name;
         this.effectType = effectType;
@@ -38,5 +41,10 @@ public enum PositiveBrewEffects implements PositiveEffect {
     @Override
     public EffectType getEffectType() {
         return this.effectType;
+    }
+
+    @Override
+    public Class<?> getEffectClass() {
+        return this.effectClass;
     }
 }

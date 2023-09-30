@@ -28,6 +28,7 @@ public class BrewFactory {
     }
 
     public Set<Brew> buildBrewSet(){
+        BrewManager brewManager = BrewManager.getInstance();
         Map<String,Object> configMap = YamlParser.getConfigMap(this.filePath);
         Map<String,Object> customItemMap = ((Map<String,Object>)configMap.get("customItems"));
         customItemMap
@@ -39,11 +40,17 @@ public class BrewFactory {
 
         Map<String,Object> brewMap = ((Map<String,Object>)configMap.get("recipes"));
 
-        brewMap.keySet().stream().forEach(brewName-> brewSet.add(getBrewFromConfigSectionMap((Map<String, Object>) brewMap.get(brewName))));
+        brewMap.keySet().stream().forEach(brewName-> {
+            Brew brewToAdd = getBrewFromConfigSectionMap((Map<String, Object>) brewMap.get(brewName),brewName);
+            if(brewToAdd != null){
+                brewSet.add(brewToAdd);
+                brewManager.register(brewToAdd);
+            }
+        });
         return this.brewSet;
     }
 
-    private Brew getBrewFromConfigSectionMap(Map<String, Object> brewMap) {
+    private Brew getBrewFromConfigSectionMap(Map<String, Object> brewMap, String internalName) {
         List<String> commands = (List<String>) brewMap.get("servercommands");
         List<String> effectNames = (List<String>) brewMap.get("effects");
         if(commands != null){
@@ -52,11 +59,11 @@ public class BrewFactory {
             for (String command : commands) {
                 Effect brewCommandEffect = getEffectCommandFromName(command);
                 if (brewCommandEffect.getEffectType().equals(EffectType.COMBAT)) {
-                    return buildCombatBrew(brewMap);
+                    return buildCombatBrew(brewMap,internalName);
                 } else if (brewCommandEffect.getEffectType().equals(EffectType.UTILITY)) {
-                    return buildUtilityBrew(brewMap);
+                    return buildUtilityBrew(brewMap,internalName);
                 } else if (brewCommandEffect.getEffectType().equals(EffectType.ROLEPLAY)) {
-                    return buildRoleplayBrew(brewMap);
+                    return buildRoleplayBrew(brewMap,internalName);
                 }
             }
         }
@@ -68,15 +75,15 @@ public class BrewFactory {
                     return null;
                 }
                 if (brewEffect.getEffectType().equals(EffectType.COMBAT)) {
-                    return buildCombatBrew(brewMap);
+                    return buildCombatBrew(brewMap,internalName);
                 } else if (brewEffect.getEffectType().equals(EffectType.UTILITY)) {
-                    return buildUtilityBrew(brewMap);
+                    return buildUtilityBrew(brewMap,internalName);
                 } else if (brewEffect.getEffectType().equals(EffectType.ROLEPLAY)) {
-                    return buildRoleplayBrew(brewMap);
+                    return buildRoleplayBrew(brewMap,internalName);
                 }
             }
         }
-        return buildRoleplayBrew(brewMap);
+        return buildRoleplayBrew(brewMap,internalName);
     }
     //TODO add these to a utility class
     private Effect getEffectFromName(String effectName) {
@@ -129,9 +136,10 @@ public class BrewFactory {
         return new CustomBrewIngredient(ingredientInternalName);
     }
     private Ingredient getIngredientFromName(String ingredientName){
+
         if(ingredientName.contains("Brewery")){
             String brewName = ingredientName.replace("Brewery:","");
-            return new CustomBrewIngredient(brewName.substring(0,brewName.indexOf("/")));
+            return new CustomBrewIngredient(brewName);
         }
         if(!IngredientManager.getInstance().isRegistered(ingredientName)){
             VanillaBrewIngredient vanillaBrewIngredient = new VanillaBrewIngredient(ingredientName);
@@ -141,18 +149,19 @@ public class BrewFactory {
         return IngredientManager.getInstance().getCustomIngredient(ingredientName);
     }
 
-    private CombatBrew buildCombatBrew(Map<String, Object> combatBrewMap) {
-        return buildBrew(combatBrewMap, new CombatBrew.CombatBrewBuilder()).build();
+    private CombatBrew buildCombatBrew(Map<String, Object> combatBrewMap,String internalName) {
+        return buildBrew(combatBrewMap, new CombatBrew.CombatBrewBuilder(), internalName).build();
     }
 
-    private RoleplayBrew buildRoleplayBrew(Map<String, Object> roleplayBrewMap) {
-        return buildBrew(roleplayBrewMap, new RoleplayBrew.RoleplayBrewBuilder()).build();
+    private RoleplayBrew buildRoleplayBrew(Map<String, Object> roleplayBrewMap,String internalName) {
+        return buildBrew(roleplayBrewMap, new RoleplayBrew.RoleplayBrewBuilder(), internalName).build();
     }
 
-    private UtilityBrew buildUtilityBrew(Map<String, Object> utilityBrewMap) {
-        return buildBrew(utilityBrewMap, new UtilityBrew.UtilityBrewBuilder()).build();
+    private UtilityBrew buildUtilityBrew(Map<String, Object> utilityBrewMap,String internalName) {
+        return buildBrew(utilityBrewMap, new UtilityBrew.UtilityBrewBuilder(), internalName).build();
     }
-    private <T extends AbstractBrew.AbstractBrewBuilder> T buildBrew(Map<String, Object> brewMap, T brewBuilder) {
+    private <T extends AbstractBrew.AbstractBrewBuilder> T buildBrew(Map<String, Object> brewMap, T brewBuilder,String brewInternalName) {
+        brewBuilder.setInternalName(brewInternalName);
         String brewName = brewMap.get("name").toString();
         if (brewName.contains("/")) {
             brewBuilder.setName(brewName.substring(0, brewName.indexOf("/")));
@@ -175,7 +184,7 @@ public class BrewFactory {
         }
 
         ((List<String>) brewMap.get("ingredients")).forEach(ingredientName ->
-                brewBuilder.addIngredient(getIngredientFromName(ingredientName)));
+                brewBuilder.addIngredient(getIngredientFromName(ingredientName), Integer.parseInt(ingredientName.substring(ingredientName.indexOf("/")+1,ingredientName.length()))));
 
         return brewBuilder;
     }

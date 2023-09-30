@@ -57,7 +57,6 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="editButton" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="77.0" text="Edit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                   <Button mnemonicParsing="false" prefHeight="1.0" prefWidth="77.0" text="Add" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                   <Button fx:id="removeButton" disable="true" mnemonicParsing="false" prefHeight="1.0" prefWidth="77.0" text="Remove" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                </children>

@@ -26,6 +26,8 @@ public enum PositiveBrewCommandEffect implements PositiveCommandEffect, Positive
     private String effectName;
     private String commandString;
     private EffectType effectType;
+    private Class<?> effectClass = this.getClass();
+
     PositiveBrewCommandEffect(String effectName, String commandString, EffectType effectType){
         this.effectName = effectName;
         this.commandString = commandString;
@@ -47,4 +49,8 @@ public enum PositiveBrewCommandEffect implements PositiveCommandEffect, Positive
         return this.effectType;
     }
 
+    @Override
+    public Class<?> getEffectClass() {
+        return this.effectClass;
+    }
 }
