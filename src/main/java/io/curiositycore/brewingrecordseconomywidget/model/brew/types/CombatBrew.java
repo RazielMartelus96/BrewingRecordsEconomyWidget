@@ -7,6 +7,9 @@ import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient
 
 import java.util.Set;
 
+/**
+ * Brew that causes Combat benefiting effects after drinking.
+ */
 public class CombatBrew extends AbstractBrew {
 
 
