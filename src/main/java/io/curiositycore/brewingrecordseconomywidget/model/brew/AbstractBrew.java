@@ -138,11 +138,11 @@ public abstract class AbstractBrew implements Brew{
         }
         @JsonIgnore
         @Override
-        public AbstractBrewBuilder<T> addEffect(Effect commandEffect) {
-            if(commandEffect == null){
+        public AbstractBrewBuilder<T> addEffect(Effect effect) {
+            if(effect == null){
                 return this;
             }
-            this.commandEffects.add(commandEffect);
+            this.commandEffects.add(effect);
             return this;
         }
         @JsonIgnore
@@ -153,9 +153,6 @@ public abstract class AbstractBrew implements Brew{
             this.ingredients.add(clonedIngredient);
             return this;
         }
-
-        @JsonIgnore
-        protected abstract boolean isCorrectEffectType(Effect commandEffectToCheck);
 
     }
 }

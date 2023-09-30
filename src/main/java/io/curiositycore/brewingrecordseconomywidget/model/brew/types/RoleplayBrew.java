@@ -3,7 +3,6 @@ package io.curiositycore.brewingrecordseconomywidget.model.brew.types;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.AbstractBrew;
 import io.curiositycore.brewingrecordseconomywidget.model.effects.Effect;
-import io.curiositycore.brewingrecordseconomywidget.model.effects.types.EffectType;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 
 import java.util.Set;
@@ -20,10 +19,5 @@ public class RoleplayBrew extends AbstractBrew {
             return new RoleplayBrew(this.internalName, this.name, this.commandEffects,this.ingredients,null);
         }
 
-        @Override
-        protected boolean isCorrectEffectType(Effect commandEffectToCheck) {
-            return commandEffectToCheck.getEffectType().equals(EffectType.ROLEPLAY);
-
-        }
     }
 }
