@@ -3,15 +3,39 @@ package io.curiositycore.brewingrecordseconomywidget.model.ingredients;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bukkit.Material;
-//TODO good example for KK to potentially have a go at doing documentation for
 
+/**
+ * Ingredient that consists of a Vanilla Minecraft Item.
+ */
 public class VanillaBrewIngredient implements Ingredient ,Cloneable{
-    private Class<?> ingredientClass = this.getClass();
+    /**
+     * The class of the Ingredient.
+     */
+    private final Class<?> ingredientClass = this.getClass();
+    /**
+     * The Bukkit Material of the Ingredient.
+     */
+    private final Material ingredient;
 
-    private Material ingredient;
+    /**
+     * The cost of a singular Ingredient of this type.
+     */
     private int cost = 0;
+
+    /**
+     * The amount of the Ingredient required for the Ingredient's Craftable recipe.
+     */
     private int amount;
+
+    /**
+     * The cost of the amount of Ingredients required for the Ingredient's Craftable recipe.
+     */
     private int amountCost;
+
+    /**
+     * Constructor of the Ingredient that initialises the Material based on the specified Material Name.
+     * @param ingredientName The Bukkit Material name of the Ingredient.
+     */
     public VanillaBrewIngredient(@JsonProperty("potentialMaterialChoices") String ingredientName){
         if(ingredientName.contains("/")){
             this.ingredient = Material.valueOf(ingredientName.toUpperCase().substring(0,ingredientName.indexOf("/")));
