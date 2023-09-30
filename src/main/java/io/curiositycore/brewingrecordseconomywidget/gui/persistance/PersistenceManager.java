@@ -3,7 +3,6 @@ package io.curiositycore.brewingrecordseconomywidget.gui.persistance;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
-import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewFactory;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,9 +18,11 @@ public class PersistenceManager {
      * data's file name, as a String.
      */
     private Map<String, PersistentData> dataMap = new HashMap<>();
-    private ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * Path to the default location to create the brewData directory.
+     */
     private final String persistenceDirectoryPath =System.getProperty("user.home")+"/brewData";
-    BrewFactory brewFactory = new BrewFactory("/config.yml");;
     /**
      * Instance of the Persistence Manager, as per the Singleton Pattern.
      */
@@ -36,10 +37,23 @@ public class PersistenceManager {
         }
         return instance;
     }
-    public void addSavedData(PersistentData persistentData){
+
+    /**
+     * Registers data to the Manager.
+     * @param persistentData The data to register.
+     */
+    public void register(PersistentData persistentData){
         this.dataMap.put(persistentData.getFileName(),persistentData);
     }
-    //TODO make custom exception here
+    //TODO This is sloppy and doesnt allow for varying persistent data types to be read (and will likely cause an error).
+
+    /**
+     * Deserializes all the currently saved JSON files within the default brewData directory and registers them to
+     * the Manager.
+     * @param classOfData The class of the persistent data to read from the JSON files.
+     * @param <T> The type parameter of the data to read from the JSON files.
+     * @throws IOException
+     */
     public<T extends PersistentData>  void readAllDataToCache(Class<T> classOfData) throws IOException {
         File directory = new File(this.persistenceDirectoryPath);
         if(!directory.exists() || !directory.isDirectory()){
@@ -53,6 +67,12 @@ public class PersistenceManager {
             this.dataMap.put(brewMap.getFileName(),brewMap);
         }
     }
+
+    /**
+     * Creates a new json file within the default brewData directory.
+     * @param fileName The name of the file to create.
+     * @return The empty json file with the specified file name.
+     */
     public File createPersistenceFile(String fileName){
         if(fileName == null){
             return null;
@@ -63,6 +83,11 @@ public class PersistenceManager {
         }
         return new File(this.persistenceDirectoryPath,fileName+".json");
     }
+
+    /**
+     * Loads the specified persistent data from the Manager.
+     * @param fileName The name of the persistent data's source file.
+     */
     public void loadData(String fileName){
         this.dataMap.get(fileName).load();
     }
@@ -74,6 +99,13 @@ public class PersistenceManager {
     private boolean dataNameAvailable(PersistentData dataToCheck){
         return !this.dataMap.containsKey(dataToCheck.getFileName());
     }
+
+    //TODO also sloppy, doesnt take into account that soon there will be other persistent data types other than just the
+    //     Config Preset JSONs.
+    /**
+     * Get the name of all persistent files within the Manager.
+     * @return List of all persistent file names.
+     */
     public List<String> getFileNames(){
         File directory = new File(this.persistenceDirectoryPath);
         if(!directory.exists() || !directory.isDirectory()){
@@ -83,7 +115,6 @@ public class PersistenceManager {
             return Arrays.stream(Objects.requireNonNull(directory.list())).toList();
         }
         catch(NullPointerException e){
-            System.out.println("Directory was null");
             return Collections.emptyList();
         }
 
