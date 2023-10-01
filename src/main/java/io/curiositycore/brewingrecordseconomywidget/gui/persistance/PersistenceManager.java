@@ -2,7 +2,7 @@ package io.curiositycore.brewingrecordseconomywidget.gui.persistance;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -63,7 +63,7 @@ public class PersistenceManager {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            BrewConfigData brewMap = mapper.readValue(datafile, BrewConfigData.class);
+            ConfigData brewMap = mapper.readValue(datafile, ConfigData.class);
             this.dataMap.put(brewMap.getFileName(),brewMap);
         }
     }

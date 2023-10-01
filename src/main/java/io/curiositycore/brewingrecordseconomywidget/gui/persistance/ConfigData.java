@@ -1,10 +1,8 @@
-package io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews;
+package io.curiositycore.brewingrecordseconomywidget.gui.persistance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.curiositycore.brewingrecordseconomywidget.gui.persistance.PersistenceManager;
-import io.curiositycore.brewingrecordseconomywidget.gui.persistance.PersistentData;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.Brew;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewManager;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
@@ -19,7 +17,7 @@ import java.util.Map;
  * The persistent data of a Configuration Preset saved by a user during a previous session of the Application. Contains
  * the general Ingredients list and all the Brews defined within said previous session.
  */
-public class BrewConfigData implements PersistentData {
+public class ConfigData implements PersistentData {
     /**
      * The name of the pre-set's JSON file.
      */
@@ -40,7 +38,7 @@ public class BrewConfigData implements PersistentData {
      * Constructor which initialises the Config Data's JSON file name.
      * @param configDataName The Config Data's file name.
      */
-    public BrewConfigData(String configDataName){
+    public ConfigData(String configDataName){
         this.configDataName = configDataName;
     }
 
@@ -50,7 +48,7 @@ public class BrewConfigData implements PersistentData {
      * @param brewMap Map representing the defined Brews within the JSON file.
      * @param ingredientMap Map representing the general Ingredients defined within the JSON file.
      */
-    public BrewConfigData(@JsonProperty("fileName") String configDataName,@JsonProperty("brewMap") Map<String,Brew> brewMap,@JsonProperty("ingredientMap") Map<String,Ingredient> ingredientMap ){
+    public ConfigData(@JsonProperty("fileName") String configDataName, @JsonProperty("brewMap") Map<String,Brew> brewMap, @JsonProperty("ingredientMap") Map<String,Ingredient> ingredientMap ){
         this.brewMap = brewMap;
         this.ingredientMap = ingredientMap;
         this.configDataName = configDataName;

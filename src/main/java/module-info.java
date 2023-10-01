@@ -20,8 +20,9 @@ module io.curiositycore.brewingrecordseconomywidget {
     opens io.curiositycore.brewingrecordseconomywidget to javafx.fxml;
     exports io.curiositycore.brewingrecordseconomywidget;
     exports io.curiositycore.brewingrecordseconomywidget.model.brew;
-    exports io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews;
     exports io.curiositycore.brewingrecordseconomywidget.model.effects.types.vanilla to com.fasterxml.jackson.databind;
     exports io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums to com.fasterxml.jackson.databind;
+    exports io.curiositycore.brewingrecordseconomywidget.gui.persistance;
+    opens io.curiositycore.brewingrecordseconomywidget.gui.persistance to com.fasterxml.jackson.databind;
 
 }

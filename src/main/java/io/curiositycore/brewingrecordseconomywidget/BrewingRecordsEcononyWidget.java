@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
+//TODO logic for closing the main window (and exiting the application entire) should be added.
 /**
  * Main class which initializes the user interface of the BREW executable.
  */

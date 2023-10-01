@@ -1,6 +1,6 @@
 package io.curiositycore.brewingrecordseconomywidget.model.brew;
 
-import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
+import io.curiositycore.brewingrecordseconomywidget.gui.persistance.ConfigData;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -100,7 +100,7 @@ public class BrewManager {
      * @param dataToAddTo The Brew Config Data Instance to add the Brews to.
      * @return The populated Brew Config Data Instance
      */
-    public BrewConfigData addBrewsToConfigData(BrewConfigData dataToAddTo){
+    public ConfigData addBrewsToConfigData(ConfigData dataToAddTo){
         dataToAddTo.addData(this.brewMap);
         return dataToAddTo;
     }

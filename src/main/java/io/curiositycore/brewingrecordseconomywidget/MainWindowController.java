@@ -1,7 +1,7 @@
 package io.curiositycore.brewingrecordseconomywidget;
 
 import io.curiositycore.brewingrecordseconomywidget.gui.persistance.PersistenceManager;
-import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
+import io.curiositycore.brewingrecordseconomywidget.gui.persistance.ConfigData;
 import io.curiositycore.brewingrecordseconomywidget.gui.persistance.controls.SaveDialogBox;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.Brew;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.BrewFactory;
@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-
+//TODO controller should be moved to a dedicated controller package with the gui package.
 /**
  * Controller responsible for the functionality of the main JavaFX windows. Main responsibilities include the population
  * of the ingredient and brew tables, along with event handling of the various menu items.
@@ -111,13 +111,15 @@ public class MainWindowController {
     @FXML
     private Menu openRecentConfigMenu;
 
+    //TODO consider compartmentalising the processes of setting up the ingredient and brew tables to their own classes
+    //     or, at the least, private methods.
     /**
      * Occurs upon initialisation of the window.
      * @throws IOException
      */
     @FXML
     public void initialize() throws IOException {
-        PersistenceManager.getInstance().readAllDataToCache(BrewConfigData.class);
+        PersistenceManager.getInstance().readAllDataToCache(ConfigData.class);
         createRecentConfigMenuItems();
         BrewFactory brewFactory = new BrewFactory("/config.yml");
         brewFactory.buildBrewSet();
@@ -180,6 +182,8 @@ public class MainWindowController {
         stage.show();
     }
 
+    //TODO consider adding checks to ensure that files cannot be saved without an overwrite warning if a file of the
+    //     same user-chosen name already exists within the brewData directory.
     /**
      * Saves the current preset to a JSON file for the sake of persistence. This file can be called via utilising the
      * "Open Recent Config" menu item.
@@ -191,7 +195,7 @@ public class MainWindowController {
         if(fileToSave == null){
             return;
         }
-        BrewConfigData configDataToSave = new BrewConfigData(fileToSave.getName());
+        ConfigData configDataToSave = new ConfigData(fileToSave.getName());
 
         configDataToSave = BrewManager.getInstance().addBrewsToConfigData(configDataToSave);
         configDataToSave = IngredientManager.getInstance().addIngredientsToConfigData(configDataToSave);

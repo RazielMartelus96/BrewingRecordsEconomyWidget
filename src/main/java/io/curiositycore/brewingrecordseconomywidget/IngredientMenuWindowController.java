@@ -14,6 +14,7 @@ import javafx.scene.input.MouseButton;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
+//TODO controller should be moved to a dedicated controller package with the gui package.
 
 /**
  * Controller for the secondary window that opens when the user wishes to analyse, edit and generally interact with the
@@ -97,6 +98,8 @@ public class IngredientMenuWindowController {
 
     //TODO consider creating a more generalised version of this method in future, and potentially adding it to a type of
     //     util class.
+
+    //TODO Ensure that the Ingredients table within the main window also updates upon an ingredient cost change.
     /**
      * Defines the edit properties for the Cost Column of a Brew Table, allowing for users to edit the cost of the
      * selected ingredient.
