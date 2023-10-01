@@ -10,15 +10,54 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Abstract class representing the generalisation of a Brew, as per Brews defined within the Brewery Plugin.
+ */
 public abstract class AbstractBrew implements Brew{
+    /**
+     * Owner of the Brew (typically the Player who bought the Brew).
+     */
     protected String owner;
+
+    /**
+     * Internal name of the Brew within the Brewery Plugin Config File.
+     */
     protected String internalName;
+
+    /**
+     * The in-game name of the Brew.
+     */
     protected String name;
+
+    /**
+     * The cost of the Brew.
+     */
     protected int cost;
+
+    /**
+     * The effects that occur when this Brew is drank.
+     */
     protected Set<Effect> effects;
-    protected Set<Ingredient> ingredients = new HashSet<>();
+
+    /**
+     * The Ingredients within the Recipe of this Brew.
+     */
+    protected Set<Ingredient> ingredients;
+
+    /**
+     * The child class of the instance implementing this Abstract.
+     */
     protected Class<?> brewClass;
-    protected AbstractBrew(String internalName,String name, int cost, Set<Effect> effects, Set<Ingredient> ingredients,String owner){
+
+    /**
+     * Constructor which, via the parameters of the Brew Builder, initialises the Brew's properties.
+     * @param internalName The internal name of the Brew within the Brewery Plugin Config File.
+     * @param name The in-game name of the Brew.
+     * @param effects The effects that occur when the Brew is drank.
+     * @param ingredients The ingredients within the Brew's recipe.
+     * @param owner The owner of the Brew (typically the Player who bought the Brew).
+     */
+    protected AbstractBrew(String internalName, String name, Set<Effect> effects, Set<Ingredient> ingredients, String owner){
         this.internalName = internalName;
         this.name = name;
         this.ingredients = ingredients;
@@ -43,8 +82,8 @@ public abstract class AbstractBrew implements Brew{
     }
 
     @Override
-    public String setOwner(String ownerToSet) {
-        return this.owner = ownerToSet;
+    public void setOwner(String ownerToSet) {
+        this.owner = ownerToSet;
     }
 
     @Override
@@ -95,27 +134,51 @@ public abstract class AbstractBrew implements Brew{
     }
     @JsonIgnore
     protected int getOverallCost(){
-        int cost = 0;
+        int overallCost = 0;
         for(Ingredient ingredient : this.ingredients){
             try{
-                cost += ingredient.getCost();
+                overallCost += ingredient.getCost();
             }
             catch(NullPointerException e){
                 //Placeholder this is just here to ensure that the loop continues
 
             }
         }
-        return cost;
+        return overallCost;
     }
+
+    /**
+     * Abstract that represents the generalisation of a Brew Builder that builds Brews defined by the Brewery Plugin.
+     * @param <T> Type parameter for the type of Brew to be built.
+     */
     public abstract static class AbstractBrewBuilder<T extends Brew> implements BrewBuilder<T> {
+        /**
+         * The internal name of the Brew within the Brewery Plugin Config File.
+         */
         @JsonIgnore
         protected String internalName;
+
+        /**
+         * The in-game name of the Brew.
+         */
         @JsonIgnore
         protected String name;
+
+        /**
+         * The cost of the Brew.
+         */
         @JsonIgnore
         protected int cost;
+
+        /**
+         * The effects that occur when the Brew is drank.
+         */
         @JsonIgnore
-        protected Set<Effect> commandEffects = new HashSet<>();
+        protected Set<Effect> effects = new HashSet<>();
+
+        /**
+         * The ingredients within the Brew's recipe.
+         */
         @JsonIgnore
         protected Set<Ingredient> ingredients = new HashSet<>();
 
@@ -138,14 +201,11 @@ public abstract class AbstractBrew implements Brew{
         }
         @JsonIgnore
         @Override
-        public AbstractBrewBuilder<T> addEffect(Effect commandEffect) {
-            if(commandEffect == null){
+        public AbstractBrewBuilder<T> addEffect(Effect effect) {
+            if(effect == null){
                 return this;
             }
-            /*if(!isCorrectEffectType(commandEffect) && !(commandEffect instanceof NegativeEffect)){
-                throw new RuntimeException("Effect:'" + commandEffect + "' was not of the correct type");
-            }*/
-            this.commandEffects.add(commandEffect);
+            this.effects.add(effect);
             return this;
         }
         @JsonIgnore
@@ -156,9 +216,6 @@ public abstract class AbstractBrew implements Brew{
             this.ingredients.add(clonedIngredient);
             return this;
         }
-
-        @JsonIgnore
-        protected abstract boolean isCorrectEffectType(Effect commandEffectToCheck);
 
     }
 }
