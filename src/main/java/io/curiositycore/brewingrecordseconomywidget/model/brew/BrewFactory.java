@@ -12,7 +12,7 @@ import io.curiositycore.brewingrecordseconomywidget.model.ingredients.CustomBrew
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.Ingredient;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.IngredientManager;
 import io.curiositycore.brewingrecordseconomywidget.model.ingredients.VanillaBrewIngredient;
-import io.curiositycore.brewingrecordseconomywidget.model.util.YamlParser;
+import io.curiositycore.brewingrecordseconomywidget.model.util.yaml.YamlParser;
 
 import java.util.HashSet;
 import java.util.List;

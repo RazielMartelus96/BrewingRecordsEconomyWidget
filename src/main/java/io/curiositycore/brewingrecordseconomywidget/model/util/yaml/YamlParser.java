@@ -1,4 +1,4 @@
-package io.curiositycore.brewingrecordseconomywidget.model.util;
+package io.curiositycore.brewingrecordseconomywidget.model.util.yaml;
 
 import io.curiositycore.brewingrecordseconomywidget.BrewingRecordsEcononyWidget;
 import org.yaml.snakeyaml.Yaml;
