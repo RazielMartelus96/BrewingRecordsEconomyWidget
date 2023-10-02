@@ -119,6 +119,6 @@ public class IngredientManager {
         Ingredient ingredient = this.ingredientMap.get(ingredientName);
         ingredient.setCost(cost);
         BrewManager.getInstance().editBrewCost(ingredient);
-
+        //TODO edit the brew ingredient mini-table within this manager after the brew cost has been updated
     }
 }

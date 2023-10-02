@@ -128,12 +128,12 @@ public class MainWindowController {
         brewNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         try{
-        brewPositiveEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getPositiveEffectsAsString()));
-        brewNegativeEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getNegativeEffectsAsString()));
-        brewCostColumn.setCellValueFactory(brew-> new SimpleIntegerProperty(brew.getValue().getCost()).asObject());
-        brewOwnerColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getOwner()));
-        setEditPropertiesOnOwnerColumn();
-        brewTable.setEditable(true);
+            brewPositiveEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getPositiveEffectsAsString()));
+            brewNegativeEffectsColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getNegativeEffectsAsString()));
+            brewCostColumn.setCellValueFactory(brew-> new SimpleIntegerProperty(brew.getValue().getCost()).asObject());
+            brewOwnerColumn.setCellValueFactory(brew -> new SimpleStringProperty(brew.getValue().getOwner()));
+            setEditPropertiesOnOwnerColumn();
+            brewTable.setEditable(true);
         }
         catch (NullPointerException nullPointerException){
             nullPointerException.printStackTrace();
