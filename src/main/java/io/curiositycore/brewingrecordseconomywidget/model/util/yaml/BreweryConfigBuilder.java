@@ -1,5 +1,6 @@
 package io.curiositycore.brewingrecordseconomywidget.model.util.yaml;
 
+import io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews.BrewConfigData;
 import io.curiositycore.brewingrecordseconomywidget.model.brew.Brew;
 
 import java.util.Map;
@@ -10,15 +11,8 @@ import java.util.Map;
 public interface BreweryConfigBuilder extends YamlBuilder<BreweryConfigYaml>{
 
     /**
-     * Adds the specified map of Brews to the Config File.
-     * @param brewMap A map of user-defined Brews.
+     * Adds the config preset data to the builder, allowing for the building of the yaml file.
      */
-    void addBrewsData(Map<String, Brew> brewMap);
-
-    /**
-     * Adds the specified map of Ingredients to the Config File.
-     * @param brewMap A map of user-defined Ingredients.
-     */
-    void addIngredientsData(Map<String, Brew> brewMap);
+    void addConfigData(BrewConfigData brewConfigData);
 
 }
