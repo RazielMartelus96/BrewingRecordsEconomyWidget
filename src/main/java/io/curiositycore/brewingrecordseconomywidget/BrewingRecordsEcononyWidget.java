@@ -18,11 +18,7 @@ public class BrewingRecordsEcononyWidget extends Application {
         double minHeight = 720;
 
         Scene scene = new Scene(fxmlLoader.load(), minWidth, minHeight);
-
-        stage.setTitle("B.R.E.W");
-        stage.setScene(scene);
-        stage.setMinHeight(minHeight);
-        stage.setMinWidth(minWidth);
+        prepareStage(stage,minWidth,minHeight,scene);
         stage.show();
     }
 
@@ -31,5 +27,23 @@ public class BrewingRecordsEcononyWidget extends Application {
      */
     public static void main(String[] args) {
         launch();
+    }
+
+    /**
+     * Prepares the stage for application initialisation. This includes the geometry, starting scene and close event of
+     * the main application window.
+     * @param stageToPrepare The stage to prepare (the main window stage).
+     * @param minWidth The minimum width of the application window on startup.
+     * @param minHeight The minimum height of the application window on startup.
+     * @param scene The scene to set the stage to (the main application window) upon startup.
+     * @return The prepared scene.
+     */
+    private Stage prepareStage(Stage stageToPrepare,double minWidth, double minHeight, Scene scene){
+        stageToPrepare.setTitle("B.R.E.W");
+        stageToPrepare.setScene(scene);
+        stageToPrepare.setMinHeight(minHeight);
+        stageToPrepare.setMinWidth(minWidth);
+        stageToPrepare.setOnCloseRequest(closeEvent-> System.exit(0));
+        return stageToPrepare;
     }
 }

@@ -7,7 +7,7 @@ module io.curiositycore.brewingrecordseconomywidget {
     requires org.kordamp.ikonli.antdesignicons;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
-    opens io.curiositycore.brewingrecordseconomywidget.gui.persistance.brews to com.fasterxml.jackson.databind;
+    opens io.curiositycore.brewingrecordseconomywidget.gui.persistance to com.fasterxml.jackson.databind;
     opens io.curiositycore.brewingrecordseconomywidget.model.ingredients to com.fasterxml.jackson.databind;
     opens io.curiositycore.brewingrecordseconomywidget.model.brew to com.fasterxml.jackson.databind;
     opens io.curiositycore.brewingrecordseconomywidget.model.brew.types to com.fasterxml.jackson.databind;
@@ -23,6 +23,6 @@ module io.curiositycore.brewingrecordseconomywidget {
     exports io.curiositycore.brewingrecordseconomywidget.model.effects.types.vanilla to com.fasterxml.jackson.databind;
     exports io.curiositycore.brewingrecordseconomywidget.model.effects.types.command.enums to com.fasterxml.jackson.databind;
     exports io.curiositycore.brewingrecordseconomywidget.gui.persistance;
-    opens io.curiositycore.brewingrecordseconomywidget.gui.persistance to com.fasterxml.jackson.databind;
+
 
 }
